@@ -28,15 +28,9 @@ def registrar_usuario() -> Usuario:  # retorna un objeto Usuario
     """)
 
 
-    nombre: str = input("Ingrese su Nombre: ").strip()  # Elimina espacios
-    edad: int = int(input("Ingrese su Edad: ").strip())
-    saldo_inicial: float = float(input("Ingrese su saldo inicial 💰: ").strip())
     nombre: str = Validaciones.validar_nombre()
     edad: int = Validaciones.validar_edad()
-    fecha_nacimiento_str: str = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ").strip()
-    # Convertimos el dato a tipo de dato datetime
     saldo_inicial: float = Validaciones.validar_saldo()
-
     # Se construye instancia de Usuario
     jugador: Usuario = Usuario(nombre,edad,saldo_inicial)
     return jugador
@@ -66,18 +60,9 @@ def main() -> None:
             bingo.jugar()
 
         elif opcion == "2":
-            print("\n👉 Opciones Ruleta:")
-            print(" - Ingresa 'rojo' o 'negro'")
-            print(" - Ingresa un número del 0 al 36")
-            eleccion:str = input("Tu apuesta: ")
-
-            # Convertir a número si corresponde
-            if eleccion.isdigit():
-                eleccion = int(eleccion)
-
             # Llamo a ruleta jugar
             ruleta = Ruleta(jugador, costo_apuesta=10, premio=50)
-            ruleta.jugar(eleccion)
+            ruleta.jugar()
 
         elif opcion == "3":
             loteria = Loteria(jugador, costo_boleto=5, premio=200)
