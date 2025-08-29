@@ -9,7 +9,6 @@ class Usuario:
     def __str__(self):
            return (f"👤 Usuario: {self.nombre}\n"
                 f"🎂 Edad: {self.edad} años\n"
-                f"📅 Fecha Nacimiento: {self.fecha_nacimiento}\n"
                 f"💰 Saldo: ${self.__saldo}\n"
                 f"🎟️ Boletos: {self.__boletos}")
 
