@@ -1,5 +1,3 @@
-# Importo datetime para manejar las fechas de nacimiento
-from datetime import datetime, date
 # Importo clases
 from Clases.Usuario import Usuario  # Importa clase Usuario
 from Clases.Loteria import Loteria  # Importa clase Loteria
@@ -29,15 +27,18 @@ def registrar_usuario() -> Usuario:  # retorna un objeto Usuario
     ====================================            
     """)
 
+
+    nombre: str = input("Ingrese su Nombre: ").strip()  # Elimina espacios
+    edad: int = int(input("Ingrese su Edad: ").strip())
+    saldo_inicial: float = float(input("Ingrese su saldo inicial 💰: ").strip())
     nombre: str = Validaciones.validar_nombre()
     edad: int = Validaciones.validar_edad()
     fecha_nacimiento_str: str = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ").strip()
     # Convertimos el dato a tipo de dato datetime
-    fecha_nacimiento: date = datetime.strptime(fecha_nacimiento_str, "%Y-%m-%d").date()
     saldo_inicial: float = Validaciones.validar_saldo()
 
     # Se construye instancia de Usuario
-    jugador: Usuario = Usuario(nombre, edad, fecha_nacimiento,saldo_inicial)
+    jugador: Usuario = Usuario(nombre,edad,saldo_inicial)
     return jugador
 
 
