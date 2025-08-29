@@ -8,12 +8,21 @@ class Ruleta:
         self.costo_apuesta = costo_apuesta
         self.premio = premio
 
-    def jugar(self, eleccion=None):
+    def jugar(self):
         # Descuento de dinero por jugar
         resultado = self.usuario.comprar_boleto(self.costo_apuesta)
         if "Fondos insuficientes" in resultado:  # Validación de saldo
             print(resultado)
             return
+
+        print("\n👉 Opciones Ruleta:")
+        print(" - Ingresa 'rojo' o 'negro'")
+        print(" - Ingresa un número del 0 al 36")
+        eleccion:str = input("Tu apuesta: ").lower()
+
+            # Convertir a número si corresponde
+        if eleccion.isdigit():
+            eleccion = int(eleccion)
 
         # Validación de la apuesta
         if isinstance(eleccion, int):
