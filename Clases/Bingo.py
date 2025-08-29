@@ -3,7 +3,7 @@ import time
 from Clases.Usuario import Usuario
 
 class Bingo:
-    def __init__(self, usuario: Usuario, costo_boleto=10, premio=150, max_sorteos=25):
+    def __init__(self, usuario: Usuario, costo_boleto=10, premio=150, max_sorteos=30):
         self.usuario = usuario
         self.costo_boleto = costo_boleto
         self.premio = premio
