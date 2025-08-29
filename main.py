@@ -27,7 +27,6 @@ def registrar_usuario() -> Usuario:  # retorna un objeto Usuario
     ====================================            
     """)
 
-
     nombre: str = Validaciones.validar_nombre()
     edad: int = Validaciones.validar_edad()
     saldo_inicial: float = Validaciones.validar_saldo()
