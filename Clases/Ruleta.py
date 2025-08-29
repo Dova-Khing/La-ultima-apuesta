@@ -2,43 +2,45 @@ import random
 import time
 from Clases.Usuario import Usuario
 
+
 class Ruleta:
     def __init__(self, usuario: Usuario, costo_apuesta=10, premio=100):
         self.usuario = usuario
-        self.costo_apuesta = costo_apuesta
-        self.premio = premio
+        self.costo_apuesta = costo_apuesta  # Costo de jugar una ronda
+        self.premio = premio                # Premio base (se multiplica en algunos casos)
 
     def jugar(self, eleccion=None):
         """
-        El usuario puede elegir:
-        - 'rojo' o 'negro'
-        - un número del 0 al 36
-        Si no elige nada, será 'rojo' por defecto.
+        - Elección del jugador: 'rojo', 'negro' o número del 0 al 36
+        - Si no elige nada → 'rojo' por defecto
         """
-        # Cobrar apuesta
+        # Descuento de dinero por jugar
         resultado = self.usuario.comprar_boleto(self.costo_apuesta)
-        if "Fondos insuficientes" in resultado:
+        if "Fondos insuficientes" in resultado:  # Validación de saldo
             print(resultado)
             return
 
         if eleccion is None:
-            eleccion = "rojo"
+            eleccion = "rojo"  # Opción por defecto
 
         print(f"\n🎰 {self.usuario.nombre} está jugando a la Ruleta.")
         print(f"Apuesta: {eleccion} (costo ${self.costo_apuesta})")
 
+        # Simulación de la ruleta
         time.sleep(1)
-        numero = random.randint(0, 36)
-        color = random.choice(["rojo", "negro"])
+        numero = random.randint(0, 36)          # Número ganador
+        color = random.choice(["rojo", "negro"])  # Color ganador
         print(f"La bola cayó en: {numero} {color}")
 
-        # Validar ganancia
+        # Validar si ganó por número exacto
         if isinstance(eleccion, int) and 0 <= eleccion <= 36:
             if numero == eleccion:
-                self.usuario.aumentar_dinero(self.premio * 3)
+                self.usuario.aumentar_dinero(self.premio * 3)  # Premio multiplicado
                 print(f"🏆 ¡Acertaste el número! Ganaste ${self.premio * 3}")
                 print(self.usuario.mostrar_saldo())
                 return
+
+        # Validar si ganó por color
         elif eleccion in ["rojo", "negro"]:
             if color == eleccion:
                 self.usuario.aumentar_dinero(self.premio)
@@ -46,4 +48,5 @@ class Ruleta:
                 print(self.usuario.mostrar_saldo())
                 return
 
+        # Si no acierta nada → pierde
         print("😢 Perdiste la apuesta.")
