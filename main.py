@@ -30,15 +30,10 @@ def registrar_usuario() -> Usuario:  # retorna un objeto Usuario
 
     nombre: str = input("Ingrese su Nombre: ").strip()  # Elimina espacios
     edad: int = int(input("Ingrese su Edad: ").strip())
-
-    fecha_nacimiento_str: str = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ").strip()
-
-    # Convertimos el dato a tipo de dato datetime
-    fecha_nacimiento: date = datetime.strptime(fecha_nacimiento_str, "%Y-%m-%d").date()
     saldo_inicial: float = float(input("Ingrese su saldo inicial 💰: ").strip())
 
     # Se construye instancia de Usuario
-    jugador: Usuario = Usuario(nombre, edad, fecha_nacimiento,saldo_inicial)
+    jugador: Usuario = Usuario(nombre, edad,saldo_inicial)
     return jugador
 
 
