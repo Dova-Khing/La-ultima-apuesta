@@ -4,12 +4,12 @@ from Clases.Usuario import Usuario
 
 class Bingo:
     # Creacion de constructores 
-    def _init_(self, usuario: Usuario, costo_boleto=10, premio=150, max_sorteos=30):
+    def __init__(self, usuario: Usuario, costo_boleto=10, premio=150, max_sorteos=30):
         self.usuario = usuario
         self.costo_boleto = costo_boleto
         self.premio = premio
         self.max_sorteos = max_sorteos
-        self.carton = self.generar_carton()
+        self.carton = self.generar_carton()  # Generación inicial del cartón
         self.numeros_sorteados = set()
         self.juego_terminado = False
 
@@ -38,8 +38,11 @@ class Bingo:
 
         sorteos = 0
 
-        while not self.juego_terminado and sorteos < self.max_sorteos: # Hasta que la secuencia no sea cumplida
+        # Hasta que la secuencia no sea cumplida
+        while not self.juego_terminado and sorteos < self.max_sorteos: 
             numero = self.sortear_numero()
+            if numero is None:  # Si ya no hay más números
+                break
             sorteos += 1
             print(f"➡ Número sorteado: {numero}")
             time.sleep(1)
