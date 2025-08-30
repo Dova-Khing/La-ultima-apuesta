@@ -1,8 +1,7 @@
 class Usuario:
-    def __init__(self, nombre: str, edad: int, fecha_nacimiento: str, saldo_inicial: int = 0):
+    def __init__(self, nombre: str, edad:str, saldo_inicial: int = 0):
         self.nombre = nombre
         self.edad = edad
-        self.fecha_nacimiento = fecha_nacimiento
         self.__saldo = saldo_inicial   # 💰 dinero disponible
         self.__boletos = 0             # 🎟️ boletos (se inicializa en 0)
      
@@ -10,7 +9,6 @@ class Usuario:
     def __str__(self):
            return (f"👤 Usuario: {self.nombre}\n"
                 f"🎂 Edad: {self.edad} años\n"
-                f"📅 Fecha Nacimiento: {self.fecha_nacimiento}\n"
                 f"💰 Saldo: ${self.__saldo}\n"
                 f"🎟️ Boletos: {self.__boletos}")
 
