@@ -1,49 +1,40 @@
 class Usuario:
-    def __init__(self, nombre: str, edad:str, saldo_inicial: int = 0):
-        self.nombre = nombre
-        self.edad = edad
+    def __init__(self, nombre: str, edad: str, saldo_inicial: int = 0):
+        self.nombre = nombre           # Nombre del usuario en concreto
+        self.edad = edad               # Edad
         self.__saldo = saldo_inicial   # 💰 dinero disponible
-        self.__boletos = 0             # 🎟️ boletos (se inicializa en 0)
+        self.__boletos = 0             # 🎟 boletos (se inicializa en 0)
      
-     #Representacion del objeto
+    # Representacion del objeto
     def __str__(self):
-           return (f"👤 Usuario: {self.nombre}\n"
-                f"🎂 Edad: {self.edad} años\n"
-                f"💰 Saldo: ${self.__saldo}\n"
-                f"🎟️ Boletos: {self.__boletos}")
+        return (f"👤 Usuario: {self.nombre}\n"  # Muestra el nombre del jugador
+                f"🎂 Edad: {self.edad} años\n"  # Muestra la edad del jugador
+                f"💰 Saldo: ${self.__saldo}\n"  # Muestra el saldo del jugador
+                f"🎟 Boletos: {self.__boletos}")# Muestra los boletos del jugador
 
     # --- Método que aumenta el dinero si se gana el premio ---
     def aumentar_dinero(self, cantidad: int):
         if cantidad > 0:
             self.__saldo += cantidad
-            return f"Se han añadido ${cantidad}. Saldo actual: ${self.__saldo}"
+            return f"Se han añadido ${cantidad}. Saldo actual: ${self.__saldo}" # Se añade la cantidad de saldo correspondiente
         else:
-            return "La cantidad debe ser positiva."
+            return "La cantidad debe ser positiva." # Indica que la cantidad debe ser positiva
         
     # --- Método que muestra la cantidad de dinero obtenido ---
-    def mostrar_saldo(self):
-        return f"Saldo actual de {self.nombre}: ${self.__saldo} | Boletos: {self.__boletos}"
+    def mostrar_saldo(self): 
+        return f"Saldo actual de {self.nombre}: ${self.__saldo} | Boletos: {self.__boletos}" 
+        # Retorna mensaje concatenado del saldo actual con el nombre y boletos
 
     # --- Método que permite la compra de boletos ---
     def comprar_boleto(self, costo: int, cantidad: int = 1):
         if costo <= 0 or cantidad <= 0:
             return "El costo y la cantidad deben ser mayores a 0."
 
-        total = costo * cantidad
+        total = costo * cantidad # Para el total multiplica el costo por la cantidad de boletos comprados
         if self.__saldo >= total:
             self.__saldo -= total
             self.__boletos += cantidad
-            return (f"{self.nombre} compró {cantidad} boleto(s) por ${total}. "
-                    f"Saldo restante: ${self.__saldo} | Boletos: {self.__boletos}")
+            return (f"{self.nombre} compró {cantidad} boleto(s) por ${total}. " 
+                    f"Saldo restante: ${self.__saldo} | Boletos: {self.__boletos}") 
         else:
-            return "Fondos insuficientes para comprar los boletos."
-    
-    # --- Método para gastar boletos (ej. cuando se juega Bingo) ---
-    def usar_boleto(self, cantidad: int = 1):
-        if cantidad <= 0:
-            return "La cantidad debe ser mayor a 0."
-        if self.__boletos >= cantidad:
-            self.__boletos -= cantidad
-            return f"{self.nombre} usó {cantidad} boleto(s). Boletos restantes: {self.__boletos}"
-        else:
-            return "No tienes suficientes boletos."
+            return "Fondos insuficientes para comprar los boletos." # Si no se cumplen las condiciones retorna el mensaje indicativo
