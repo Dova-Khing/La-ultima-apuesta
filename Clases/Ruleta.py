@@ -27,15 +27,15 @@ class Ruleta:
         # Validación de la apuesta
         if isinstance(eleccion, int):
             if eleccion < 0 or eleccion > 36:  # Número inválido
-                print("⚠️ Apuesta inválida. Se tomará por defecto el número 1.")
+                print("⚠ Apuesta inválida. Se tomará por defecto el número 1.")
                 eleccion = 1
         elif isinstance(eleccion, str):
             if eleccion.lower() not in ["rojo", "negro"]:
-                print("⚠️ Apuesta inválida. Se tomará por defecto el color negro.")
+                print("⚠ Apuesta inválida. Se tomará por defecto el color negro.")
                 eleccion = "negro"
         else:
             # Si no es número ni cadena
-            print("⚠️ Apuesta inválida. Se tomará por defecto el número 1.")
+            print("⚠ Apuesta inválida. Se tomará por defecto el número 1.")
             eleccion = 1
 
         print(f"\n🎰 {self.usuario.nombre} está jugando a la Ruleta.")
@@ -64,4 +64,4 @@ class Ruleta:
                 return
 
         # Si no acierta nada → pierde
-        print("😢 Perdiste la apuesta.")
+        print("😢 Perdiste la apuesta.")
