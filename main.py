@@ -64,6 +64,7 @@ def main() -> None: # no retorna nada
             ruleta = Ruleta(jugador, costo_apuesta=10, premio=50)
             ruleta.jugar() # Llama el metodo de jugar para iniciar el bingo
 
+
         elif opcion == "3":
             loteria = Loteria(jugador, costo_boleto=5, premio=200)
             loteria.jugar() # Llama el metodo de jugar para iniciar la loteria

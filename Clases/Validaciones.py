@@ -1,5 +1,3 @@
-# Importo datetime para manejar las fechas de nacimiento
-from datetime import datetime, date
 # Importo clases
 from Clases.Usuario import Usuario  # Importa clase Usuario
 from Clases.Loteria import Loteria  # Importa clase Loteria

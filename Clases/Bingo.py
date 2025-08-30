@@ -3,7 +3,6 @@ import time
 from Clases.Usuario import Usuario
 
 class Bingo:
-
     # Creacion de constructores 
     def _init_(self, usuario: Usuario, costo_boleto=10, premio=150, max_sorteos=30):
         self.usuario = usuario

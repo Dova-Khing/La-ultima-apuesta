@@ -12,6 +12,7 @@ class Usuario:
                 f"💰 Saldo: ${self.__saldo}\n"    # muestra el saldo del jugador
                 f"🎟️ Boletos: {self.__boletos}")  # muestra los boletos del jugador
 
+
     # --- Método que aumenta el dinero si se gana el premio ---
     def aumentar_dinero(self, cantidad: int):
         if cantidad > 0:
