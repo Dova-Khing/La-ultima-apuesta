@@ -15,7 +15,7 @@ class Loteria:
             print(resultado)
             return
 
-        print(f"\n🎟️ {self.usuario.nombre} está jugando la Lotería.")
+        print(f"\n {self.usuario.nombre} está jugando la Lotería.")
         boleto_usuario = random.randint(1000, 9999)
         boleto_ganador = random.randint(1000, 9999)
 
@@ -25,7 +25,7 @@ class Loteria:
 
         if boleto_usuario == boleto_ganador:
             self.usuario.aumentar_dinero(self.premio)
-            print(f"🏆 ¡Felicidades! Ganaste la lotería y recibes ${self.premio}")
+            print(f" ¡Felicidades! Ganaste la lotería y recibes ${self.premio}")
             print(self.usuario.mostrar_saldo())
         else:
-            print("😢 No ganaste esta vez, sigue intentando.")
+            print("No ganaste esta vez, sigue intentando.")
