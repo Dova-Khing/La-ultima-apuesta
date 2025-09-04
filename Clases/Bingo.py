@@ -30,7 +30,7 @@ class Bingo:
             print(resultado)
             return
 
-        print(f"\n🎲 {self.usuario.nombre} ha comenzado el Bingo 🎲")
+        print(f"\n {self.usuario.nombre} ha comenzado el Bingo 🎲")
         self.mostrar_carton()
 
         sorteos = 0
@@ -38,19 +38,19 @@ class Bingo:
         while not self.juego_terminado and sorteos < self.max_sorteos:
             numero = self.sortear_numero()
             sorteos += 1
-            print(f"➡️ Número sorteado: {numero}")
+            print(f" Número sorteado: {numero}")
             time.sleep(0.5)
 
             if self.verificar_ganador():
                 self.juego_terminado = True
                 self.usuario.aumentar_dinero(self.premio)
-                print(f"\n🏆 ¡Bingo! {self.usuario.nombre} completó el cartón en {sorteos} sorteos y gana ${self.premio}")
+                print(f"\n ¡Bingo! {self.usuario.nombre} completó el cartón en {sorteos} sorteos y gana ${self.premio}")
                 print(self.usuario.mostrar_saldo())
                 return
 
         # Si se acaban los sorteos y no completó el cartón
         if not self.juego_terminado:
-            print("\n😢 Se acabaron los intentos y no lograste completar el cartón.")
+            print("\n Se acabaron los intentos y no lograste completar el cartón.")
 
     def sortear_numero(self):
         """Saca un número único del 1 al 50"""

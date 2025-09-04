@@ -15,7 +15,7 @@ class Ruleta:
             print(resultado)
             return
 
-        print("\n👉 Opciones Ruleta:")
+        print("\n Opciones Ruleta:")
         print(" - Ingresa 'rojo' o 'negro'")
         print(" - Ingresa un número del 0 al 36")
         eleccion:str = input("Tu apuesta: ").lower()
@@ -27,18 +27,18 @@ class Ruleta:
         # Validación de la apuesta
         if isinstance(eleccion, int):
             if eleccion < 0 or eleccion > 36:  # Número inválido
-                print("⚠️ Apuesta inválida. Se tomará por defecto el número 1.")
+                print(" Apuesta inválida. Se tomará por defecto el número 1.")
                 eleccion = 1
         elif isinstance(eleccion, str):
             if eleccion.lower() not in ["rojo", "negro"]:
-                print("⚠️ Apuesta inválida. Se tomará por defecto el color negro.")
+                print(" Apuesta inválida. Se tomará por defecto el color negro.")
                 eleccion = "negro"
         else:
             # Si no es número ni cadena
-            print("⚠️ Apuesta inválida. Se tomará por defecto el número 1.")
+            print(" Apuesta inválida. Se tomará por defecto el número 1.")
             eleccion = 1
 
-        print(f"\n🎰 {self.usuario.nombre} está jugando a la Ruleta.")
+        print(f"\n {self.usuario.nombre} está jugando a la Ruleta.")
         print(f"Apuesta: {eleccion} (costo ${self.costo_apuesta})")
 
         # Simulación de la ruleta
@@ -51,7 +51,7 @@ class Ruleta:
         if isinstance(eleccion, int) and 0 <= eleccion <= 36:
             if numero == eleccion:
                 self.usuario.aumentar_dinero(self.premio * 3)  # Premio multiplicado
-                print(f"🏆 ¡Acertaste el número! Ganaste ${self.premio * 3}")
+                print(f" ¡Acertaste el número! Ganaste ${self.premio * 3}")
                 print(self.usuario.mostrar_saldo())
                 return
 
@@ -59,9 +59,10 @@ class Ruleta:
         elif isinstance(eleccion, str) and eleccion in ["rojo", "negro"]:
             if color == eleccion:
                 self.usuario.aumentar_dinero(self.premio)
-                print(f"🏆 ¡Acertaste el color! Ganaste ${self.premio}")
+                print(f" ¡Acertaste el color! Ganaste ${self.premio}")
                 print(self.usuario.mostrar_saldo())
                 return
 
         # Si no acierta nada → pierde
-        print("😢 Perdiste la apuesta.")
+        print(" Perdiste la apuesta.")
+

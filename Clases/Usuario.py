@@ -2,15 +2,15 @@ class Usuario:
     def __init__(self, nombre: str, edad:str, saldo_inicial: int = 0):
         self.nombre = nombre
         self.edad = edad
-        self.__saldo = saldo_inicial   # 💰 dinero disponible
-        self.__boletos = 0             # 🎟️ boletos (se inicializa en 0)
+        self.__saldo = saldo_inicial   #  dinero disponible
+        self.__boletos = 0             #  boletos (se inicializa en 0)
      
      #Representacion del objeto
     def __str__(self):
-           return (f"👤 Usuario: {self.nombre}\n"
-                f"🎂 Edad: {self.edad} años\n"
-                f"💰 Saldo: ${self.__saldo}\n"
-                f"🎟️ Boletos: {self.__boletos}")
+           return (f" Usuario: {self.nombre}\n"
+                f" Edad: {self.edad} años\n"
+                f" Saldo: ${self.__saldo}\n"
+                f" Boletos: {self.__boletos}")
 
     # --- Método que aumenta el dinero si se gana el premio ---
     def aumentar_dinero(self, cantidad: int):
