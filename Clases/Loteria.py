@@ -3,6 +3,8 @@ import time
 from Clases.Usuario import Usuario
 
 class Loteria:
+
+    # Se crean los constructores
     def __init__(self, usuario: Usuario, costo_boleto=5, premio=200):
         self.usuario = usuario
         self.costo_boleto = costo_boleto
@@ -12,7 +14,7 @@ class Loteria:
         # Cobrar boleto
         resultado = self.usuario.comprar_boleto(self.costo_boleto)
         if "Fondos insuficientes" in resultado:
-            print(resultado)
+            print(resultado) # Imprime el resultado
             return
 
         print(f"\n {self.usuario.nombre} está jugando la Lotería.")
