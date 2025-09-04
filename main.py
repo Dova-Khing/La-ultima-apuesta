@@ -9,7 +9,7 @@ from Clases.Validaciones import Validaciones # Importa clase Validaciones
 def mostrar_menu() -> None:
     print("""
 ===========================================
-   ♠️🎰  MENÚ DE LA ÚLTIMA APUESTA 🎰♠️
+    MENÚ DE LA ÚLTIMA APUESTA 
 ===========================================
 1. Jugar Bingo
 2. Jugar Ruleta
@@ -23,7 +23,7 @@ def mostrar_menu() -> None:
 def registrar_usuario() -> Usuario:  # retorna un objeto Usuario
     print("""
     ====================================
-    [ INGRESE SUS DATOS POR FAVOR 🐉 ]      
+    [ INGRESE SUS DATOS POR FAVOR ]      
     ====================================            
     """)
 
@@ -40,7 +40,7 @@ def main() -> None: # no retorna nada
     # Bienvenida
     print("""
 =============================================
-   ♠️🎰 BIENVENIDO A LA ÚLTIMA APUESTA 🎰♠️
+   BIENVENIDO A LA ÚLTIMA APUESTA 
 =============================================
     """)
 
@@ -78,7 +78,7 @@ def main() -> None: # no retorna nada
             break
 
         else:
-            print("✖️ OPCIÓN INVÁLIDA, INTENTE NUEVAMENTE ✖️")
+            print(" OPCIÓN INVÁLIDA, INTENTE NUEVAMENTE ")
 
 
 # Punto de entrada

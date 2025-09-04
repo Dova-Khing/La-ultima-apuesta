@@ -3,27 +3,24 @@ import time
 from Clases.Usuario import Usuario
 
 class Bingo:
-    # Creacion de constructores 
     def __init__(self, usuario: Usuario, costo_boleto=10, premio=150, max_sorteos=30):
         self.usuario = usuario
         self.costo_boleto = costo_boleto
         self.premio = premio
         self.max_sorteos = max_sorteos
-        self.carton = self.generar_carton()  # Generación inicial del cartón
+        self.carton = self.generar_carton()
         self.numeros_sorteados = set()
         self.juego_terminado = False
 
     def generar_carton(self):
         """Genera un cartón 5x5 con números únicos del 1 al 50"""
-        numeros = random.sample(range(1, 51), 25) # Elige varios numeros random en una secuencia
-        return [numeros[i:i+5] for i in range(0, 25, 5)] # Generacion de carton/matriz
+        numeros = random.sample(range(1, 51), 25)
+        return [numeros[i:i+5] for i in range(0, 25, 5)]
 
     def mostrar_carton(self):
-        """Muestra el cartón, marcando con X los números ya sorteados"""
-        print("\n--- CARTÓN DE BINGO ---") # Muestra carton 
+        print("\n--- CARTÓN DE BINGO ---")
         for fila in self.carton:
-            fila_marcada = [(" X" if n in self.numeros_sorteados else f"{n:2}") for n in fila]
-            print(" | ".join(fila_marcada)) # Concatena elementos de una lista con el .join
+            print(" | ".join(f"{n:2}" for n in fila))
         print("-----------------------\n")
 
     def jugar(self):
@@ -33,35 +30,27 @@ class Bingo:
             print(resultado)
             return
 
-        print(f"\n🎲 {self.usuario.nombre} ha comenzado el Bingo 🎲") # Imprime 
+        print(f"\n {self.usuario.nombre} ha comenzado el Bingo 🎲")
         self.mostrar_carton()
 
         sorteos = 0
 
-        # Hasta que la secuencia no sea cumplida
-        while not self.juego_terminado and sorteos < self.max_sorteos: 
+        while not self.juego_terminado and sorteos < self.max_sorteos:
             numero = self.sortear_numero()
-            if numero is None:  # Si ya no hay más números
-                break
             sorteos += 1
-            print(f"➡ Número sorteado: {numero}")
-            time.sleep(1)
-
-            # Mostrar el cartón actualizado
-            self.mostrar_carton() # self para especificar la variable de instancia / pertenece a un obj especifico
+            print(f" Número sorteado: {numero}")
+            time.sleep(0.5)
 
             if self.verificar_ganador():
-                self.juego_terminado = True # se cumplio la condicion
+                self.juego_terminado = True
                 self.usuario.aumentar_dinero(self.premio)
-                print(f"\n🏆 ¡Bingo! {self.usuario.nombre} completó el cartón en {sorteos} sorteos y gana ${self.premio}")
+                print(f"\n ¡Bingo! {self.usuario.nombre} completó el cartón en {sorteos} sorteos y gana ${self.premio}")
                 print(self.usuario.mostrar_saldo())
                 return
 
         # Si se acaban los sorteos y no completó el cartón
         if not self.juego_terminado:
-            print("\n😢 Se acabaron los intentos y no lograste completar el cartón.")
-            print("Así quedó tu cartón final:")
-            self.mostrar_carton()
+            print("\n Se acabaron los intentos y no lograste completar el cartón.")
 
     def sortear_numero(self):
         """Saca un número único del 1 al 50"""
@@ -69,11 +58,11 @@ class Bingo:
             self.juego_terminado = True
             return None
 
-        numero = random.randint(1, 50) # randomziar
+        numero = random.randint(1, 50)
         while numero in self.numeros_sorteados:
-            numero = random.randint(1, 50) # raondomizar 
+            numero = random.randint(1, 50)
 
-        self.numeros_sorteados.add(numero) # añadelo
+        self.numeros_sorteados.add(numero)
         return numero
 
     def verificar_ganador(self):
