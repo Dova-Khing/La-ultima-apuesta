@@ -34,3 +34,4 @@ class Validaciones:
             saldo_str = input("Ingrese su saldo inicial : ").strip()
             #retorna el saldo
         return float(saldo_str)
+

@@ -65,3 +65,4 @@ class Ruleta:
 
         # Si no acierta nada → pierde
         print(" Perdiste la apuesta.")
+
