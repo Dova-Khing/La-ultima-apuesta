@@ -5,12 +5,13 @@ Configuración y conexión a la base de datos
 Este módulo maneja la conexión a la base de datos usando SQLAlchemy.
 """
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy.ext.declarative import declarative_base
+import logging
 from contextlib import contextmanager
 from typing import Generator
-import logging
+
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.ext.declarative import declarative_base
 
 from .config import DATABASE_URL, DB_ECHO, DB_POOL_SIZE, DB_MAX_OVERFLOW
 
@@ -27,34 +28,36 @@ engine = create_engine(
     echo=DB_ECHO,
     pool_size=DB_POOL_SIZE,
     max_overflow=DB_MAX_OVERFLOW,
-    # Configuraciones específicas para SQLite
     connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
 )
 
 # Crear la fábrica de sesiones
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def get_engine():
-    """Retorna el motor de base de datos"""
+    """Retorna el motor de base de datos."""
     return engine
+
 
 def get_session() -> Session:
     """
-    Crea y retorna una nueva sesión de base de datos
+    Crea y retorna una nueva sesión de base de datos.
     
     Returns:
         Session: Sesión de SQLAlchemy
     """
     return SessionLocal()
 
+
 @contextmanager
 def get_session_context() -> Generator[Session, None, None]:
     """
-    Context manager para manejar sesiones de base de datos
+    Context manager para manejar sesiones de base de datos.
     
     Yields:
         Session: Sesión de SQLAlchemy
-        
+    
     Example:
         with get_session_context() as session:
             user = session.query(Usuario).first()
@@ -70,46 +73,49 @@ def get_session_context() -> Generator[Session, None, None]:
     finally:
         session.close()
 
+
 def create_tables():
     """
-    Crea todas las tablas definidas en los modelos
+    Crea todas las tablas definidas en los modelos.
     
-    Esta función debe ser llamada después de importar todos los modelos
+    Debe ejecutarse después de importar todos los modelos
     para que SQLAlchemy pueda detectarlos.
     """
     try:
         logger.info("Creando tablas en la base de datos...")
         Base.metadata.create_all(bind=engine)
-        logger.info("Tablas creadas exitosamente")
+        logger.info("Tablas creadas exitosamente.")
     except Exception as e:
         logger.error(f"Error al crear tablas: {e}")
         raise
 
+
 def drop_tables():
     """
-    Elimina todas las tablas de la base de datos
+    Elimina todas las tablas de la base de datos.
     
-    ⚠️ CUIDADO: Esta función elimina TODOS los datos
+    ⚠️ CUIDADO: Esta función elimina TODOS los datos.
     """
     try:
         logger.warning("Eliminando todas las tablas...")
         Base.metadata.drop_all(bind=engine)
-        logger.info("Tablas eliminadas exitosamente")
+        logger.info("Tablas eliminadas exitosamente.")
     except Exception as e:
         logger.error(f"Error al eliminar tablas: {e}")
         raise
 
-def check_connection():
+
+def check_connection() -> bool:
     """
-    Verifica la conexión a la base de datos
+    Verifica la conexión a la base de datos.
     
     Returns:
-        bool: True si la conexión es exitosa, False en caso contrario
+        bool: True si la conexión es exitosa, False en caso contrario.
     """
     try:
         with engine.connect() as connection:
-            connection.execute("SELECT 1")
-        logger.info("Conexión a la base de datos exitosa")
+            connection.execute(text("SELECT 1"))
+        logger.info("Conexión a la base de datos exitosa.")
         return True
     except Exception as e:
         logger.error(f"Error de conexión a la base de datos: {e}")
