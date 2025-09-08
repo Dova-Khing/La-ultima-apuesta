@@ -11,7 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from contextlib import contextmanager
 from typing import Generator
 import logging
-
+from sqlalchemy import text  # asegúrate de que esté importado arriba
 from .config import DATABASE_URL, DB_ECHO, DB_POOL_SIZE, DB_MAX_OVERFLOW
 
 # Configurar logging
@@ -99,17 +99,17 @@ def drop_tables():
         logger.error(f"Error al eliminar tablas: {e}")
         raise
 
-def check_connection():
+def check_connection() -> bool:
     """
-    Verifica la conexión a la base de datos
+    Verifica la conexión a la base de datos.
     
     Returns:
-        bool: True si la conexión es exitosa, False en caso contrario
+        bool: True si la conexión es exitosa, False en caso contrario.
     """
     try:
         with engine.connect() as connection:
-            connection.execute("SELECT 1")
-        logger.info("Conexión a la base de datos exitosa")
+            connection.execute(text("SELECT 1"))  # 👈 usa text()
+        logger.info("Conexión a la base de datos exitosa.")
         return True
     except Exception as e:
         logger.error(f"Error de conexión a la base de datos: {e}")
