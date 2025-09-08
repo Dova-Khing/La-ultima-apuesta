@@ -6,15 +6,30 @@ Configuraciones centralizadas para la conexión a la base de datos.
 """
 
 import os
+from typing import Optional
 
+"""URL de la base de datos
+Por defecto usa SQLite, pero puede cambiarse por PostgreSQL, MySQL, etc. en este caso
+SE USARA PARA SQL SERVER""" 
+DATABASE_URL: str = (
+    "mssql+pyodbc://sa:2000719dhj@localhost,1433/LaUltimaApuesta"
+    "?driver=ODBC+Driver+17+for+SQL+Server"
+)
+
+# Configuraciones adicionales
+DB_ECHO: bool = os.getenv("DB_ECHO", "True").lower() == "true"
+DB_POOL_SIZE: int = int(os.getenv("DB_POOL_SIZE", "5"))
+DB_MAX_OVERFLOW: int = int(os.getenv("DB_MAX_OVERFLOW", "10"))
+
+# Configuraciones específicas para diferentes entornos
 class DatabaseConfig:
-    """Configuración de base de datos para diferentes motores."""
-
+    """Configuración de base de datos para diferentes entornos"""
+    
     @staticmethod
     def get_sqlite_config(db_name: str = "ejemplo_orm.db") -> str:
-        """Configuración para SQLite (desarrollo)."""
+        """Configuración para SQLite (desarrollo)"""
         return f"sqlite:///./{db_name}"
-
+    
     @staticmethod
     def get_postgresql_config(
         host: str = "localhost",
@@ -23,9 +38,9 @@ class DatabaseConfig:
         username: str = "postgres",
         password: str = "password"
     ) -> str:
-        """Configuración para PostgreSQL (producción)."""
+        """Configuración para PostgreSQL (producción)"""
         return f"postgresql://{username}:{password}@{host}:{port}/{database}"
-
+    
     @staticmethod
     def get_mysql_config(
         host: str = "localhost",
@@ -34,32 +49,5 @@ class DatabaseConfig:
         username: str = "root",
         password: str = "password"
     ) -> str:
-        """Configuración para MySQL."""
+        """Configuración para MySQL"""
         return f"mysql+pymysql://{username}:{password}@{host}:{port}/{database}"
-
-    @staticmethod
-    def get_sqlserver_config(
-        host: str = "localhost",
-        port: int = 1433,
-        database: str = "LaUltimaApuesta"
-    ) -> str:
-        """Configuración para SQL Server usando variables de entorno para evitar que queden expuestos."""
-        username = os.getenv("DB_USER", "gerenmake")
-        password = os.getenv("LUA_PASSWORD", "2000719dhj")
-
-        return (
-            f"mssql+pyodbc://{username}:{password}@{host},{port}/{database}"
-            "?driver=ODBC+Driver+17+for+SQL+Server"
-        )
-
-
-"""URL de la base de datos usando SQL Server, se establece para la conexion a la base de datos"""
-
-DATABASE_URL: str = DatabaseConfig.get_sqlserver_config(
-    host="localhost",
-    port=1433,
-    database="LaUltimaApuesta"
-)
-
-"""Flag de depuracion py imprime todas las las consultas que ejecuta sql"""
-DB_ECHO: bool = os.getenv("DB_ECHO", "True").lower() == "true"
