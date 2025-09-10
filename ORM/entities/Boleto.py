@@ -7,7 +7,7 @@ Modelo de Boleto con SQLAlchemy y esquemas de validación con Pydantic.
 
 from sqlalchemy import Column, Integer, Float, DateTime, String, ForeignKey
 from sqlalchemy.orm import relationship
-from pydantic import BaseModel, Field, validator, constr
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
@@ -59,22 +59,23 @@ class Boleto(Base):
             "actualizado_por": self.actualizado_por,
         }
 
-
-
+"""
+Esquemas de pydantic para validacion
+"""
 
 class BoletoBase(BaseModel):
     """Esquema base de Boleto"""
     usuario_id: int = Field(..., description="ID del usuario que compra el boleto")
     juego_id: int = Field(..., description="ID del juego asociado al boleto")
-    numeros: constr(regex=r"^\d+(,\d+)*$") = Field(..., description="Números del boleto en formato '5,10,23,45'")
+    numeros: str = Field(..., description="Números del boleto en formato '5,10,23,45'")
     costo: float = Field(..., gt=0, description="Costo del boleto")
 
     @validator("numeros")
-    def normalizar_numeros(cls, v: str) -> str:
-        """Normaliza eliminando espacios innecesarios"""
+    def validar_numeros(cls, v: str) -> str:
+        """Valida que los números sean enteros separados por comas"""
         numeros = [x.strip() for x in v.split(",")]
         if not all(n.isdigit() for n in numeros):
-            raise ValueError("Todos los valores en 'numeros' deben ser enteros")
+            raise ValueError("Todos los valores en 'numeros' deben ser enteros separados por comas")
         return ",".join(numeros)
 
 
@@ -82,22 +83,6 @@ class BoletoCreate(BoletoBase):
     """Esquema para crear un boleto"""
     creado_por: str = Field(..., min_length=2, max_length=100, description="Usuario que crea el boleto")
 
-
-class BoletoBase(BaseModel):
-    numeros: Optional[str] = Field(
-        None, description="Números del boleto en formato '5,10,23,45'"
-    )
-    costo: float = Field(..., ge=0, description="Costo del boleto")
-
-    @validator("numeros")
-    def validar_numeros(cls, v: Optional[str]) -> Optional[str]:
-        if v:
-            # quitar espacios
-            v = v.strip()
-            # validar que solo tenga dígitos y comas
-            if not all(part.isdigit() for part in v.split(",")):
-                raise ValueError("Los números deben estar separados por comas y ser enteros")
-        return v
 
 class BoletoResponse(BoletoBase):
     """Esquema de respuesta para boleto"""
@@ -121,5 +106,22 @@ class BoletoListResponse(BaseModel):
     pagina: int
     por_pagina: int
 
-    class Config:
+class Config:
         from_attributes = True
+
+class BoletoUpdate(BaseModel):
+    """Esquema para actualizar un boleto"""
+    numeros: Optional[str] = Field(None, description="Nuevos números del boleto en formato '5,10,23,45'")
+    costo: Optional[float] = Field(None, gt=0, description="Nuevo costo del boleto")
+    actualizado_por: Optional[str] = Field(None, min_length=2, max_length=100, description="Usuario que actualiza el boleto")
+
+    @validator("numeros")
+    def validar_numeros(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        numeros = [x.strip() for x in v.split(",")]
+        if not all(n.isdigit() for n in numeros):
+            raise ValueError("Todos los valores en 'numeros' deben ser enteros separados por comas")
+        return ",".join(numeros)
+
+        

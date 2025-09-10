@@ -41,10 +41,10 @@ class Usuario(Base):
     loterias = relationship("Loteria", back_populates="usuario", cascade="all, delete-orphan")
     ruletas = relationship("Ruleta", back_populates="usuario", cascade="all, delete-orphan")
 
-    def __repr__(self):
+    def __repr__(self)->str:
         return f"<Usuario(id={self.id}, nombre='{self.nombre}', saldo={self.saldo_inicial})>"
 
-    def to_dict(self):
+    def to_dict(self)->dict [str,any]:
         """Convierte el objeto a un diccionario"""
         return {
             "id": self.id,
@@ -54,6 +54,9 @@ class Usuario(Base):
             "fecha_registro": self.fecha_registro.isoformat() if self.fecha_registro else None,
             "fecha_actualizacion": self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None,
         }
+"""
+ESQUEMAS DE PYDANTIC
+"""
 
 class UsuarioBase(BaseModel):
     """Esquema base para Usuario"""
@@ -62,19 +65,19 @@ class UsuarioBase(BaseModel):
     saldo_inicial: int = Field(..., ge=0, description="Saldo inicial del usuario")
 
     @validator("nombre")
-    def validar_nombre(cls, v):
+    def validar_nombre(cls, v)->str:
         if not v.strip():
             raise ValueError("El nombre no puede estar vacío")
         return v.strip().title()
 
     @validator("edad")
-    def validar_edad(cls, v):
+    def validar_edad(cls, v)->str:
         if not v.isdigit():
             raise ValueError("La edad debe ser numérica")
         return v
 
     @validator("saldo_inicial")
-    def validar_saldo(cls, v):
+    def validar_saldo(cls, v)->int:
         if v < 0:
             raise ValueError("El saldo inicial no puede ser negativo")
         return v
@@ -92,19 +95,19 @@ class UsuarioUpdate(BaseModel):
     saldo_inicial: Optional[int] = Field(None, ge=0)
 
     @validator("nombre")
-    def validar_nombre(cls, v):
+    def validar_nombre(cls, v)->str:
         if v is not None and not v.strip():
             raise ValueError("El nombre no puede estar vacío")
         return v.strip().title() if v else v
 
     @validator("edad")
-    def validar_edad(cls, v):
+    def validar_edad(cls, v)->str:
         if v is not None and not v.isdigit():
             raise ValueError("La edad debe ser numérica")
         return v
 
     @validator("saldo_inicial")
-    def validar_saldo(cls, v):
+    def validar_saldo(cls, v)->int:
         if v is not None and v < 0:
             raise ValueError("El saldo inicial no puede ser negativo")
         return v

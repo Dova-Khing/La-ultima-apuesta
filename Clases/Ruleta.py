@@ -3,12 +3,12 @@ import time
 from Clases.Usuario import Usuario
 
 class Ruleta:
-    def __init__(self, usuario: Usuario, costo_apuesta=10, premio=100):
+    def __init__(self, usuario: Usuario, costo_apuesta=10, premio=100)->None:
         self.usuario = usuario
         self.costo_apuesta = costo_apuesta
         self.premio = premio
 
-    def jugar(self):
+    def jugar(self)->None:
         # Descuento de dinero por jugar
         resultado = self.usuario.comprar_boleto(self.costo_apuesta)
         if "Fondos insuficientes" in resultado:  # Validación de saldo
