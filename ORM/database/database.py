@@ -5,14 +5,13 @@ Configuración y conexión a la base de datos
 Este módulo maneja la conexión a la base de datos usando SQLAlchemy.
 """
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from contextlib import contextmanager
 from typing import Generator
 import logging
-from sqlalchemy import text  # asegúrate de que esté importado arriba
-from .config import DATABASE_URL, DB_ECHO, DB_POOL_SIZE, DB_MAX_OVERFLOW
+from .config import DATABASE_URL, DB_ECHO, DB_MAX_OVERFLOW
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -21,12 +20,15 @@ logger = logging.getLogger(__name__)
 # Crear la clase base para los modelos
 Base = declarative_base()
 
-# Configurar el motor de base de datos
+""" Configurar el motor de base de datos
+ NOTA: pool_size puede dar problemas en Neon, por eso se comenta.
+ """
 engine = create_engine(
     DATABASE_URL,
     echo=DB_ECHO,
-    pool_size=DB_POOL_SIZE,
     max_overflow=DB_MAX_OVERFLOW,
+    pool_pre_ping=True,
+
     # Configuraciones específicas para SQLite
     connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
 )
@@ -108,7 +110,7 @@ def check_connection() -> bool:
     """
     try:
         with engine.connect() as connection:
-            connection.execute(text("SELECT 1"))  # 👈 usa text()
+            connection.execute(text("SELECT 1"))
         logger.info("Conexión a la base de datos exitosa.")
         return True
     except Exception as e:
