@@ -2,13 +2,22 @@
 Módulo de operaciones CRUD
 ==========================
 
-Este módulo contiene todas las operaciones CRUD (Create, Read, Update, Delete)
-para las entidades del sistema de lotería/apuestas.
+Este módulo centraliza todas las operaciones CRUD
+(Create, Read, Update, Delete) de las entidades del sistema.
 """
 
 from .usuario_crud import UsuarioCRUD
-from .bingo_crud import BingoCRUD
-from .ruleta_crud import RuletaCRUD
-from .loteria_crud import LoteriaCRUD
+from .juego_crud import JuegoCRUD
+from .partida_crud import PartidaCRUD
+from .historial_saldo_crud import HistorialSaldoCRUD
+from .Boleto_crud import BoletoCRUD
+from .premio_crud import PremioCRUD
 
-__all__ = ['UsuarioCRUD', 'BingoCRUD', 'RuletaCRUD', 'LoteriaCRUD']
+__all__ = [
+    "UsuarioCRUD",
+    "JuegoCRUD",
+    "PartidaCRUD",
+    "HistorialSaldoCRUD",
+    "BoletoCRUD",
+    "PremioCRUD",
+]

@@ -1,0 +1,125 @@
+"""
+Entidad Boleto
+==============
+
+Modelo de Boleto con SQLAlchemy y esquemas de validación con Pydantic.
+"""
+
+from sqlalchemy import Column, Integer, Float, DateTime, String, ForeignKey
+from sqlalchemy.orm import relationship
+from pydantic import BaseModel, Field, validator, constr
+from datetime import datetime
+from typing import Optional, List, Dict, Any
+
+from ..database.database import Base
+
+
+class Boleto(Base):
+    """
+    Modelo de Boleto que representa la tabla 'boletos'
+
+    Aplica a juegos que usan boletos (ejemplo: Bingo, Lotería).
+    """
+
+    __tablename__ = "boletos"
+
+    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    usuario_id: int = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    juego_id: int = Column(Integer, ForeignKey("juegos.id"), nullable=False)
+    numeros: str = Column(String(255), nullable=False)  # Ejemplo: "5,10,23,45"
+    costo: float = Column(Float, nullable=False)
+
+    # Auditoría
+    fecha_creacion: datetime = Column(DateTime, default=datetime.now, nullable=False)
+    fecha_actualizacion: datetime = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    creado_por: str = Column(String(100), nullable=False)
+    actualizado_por: Optional[str] = Column(String(100), nullable=True)
+
+    # Relaciones
+    usuario = relationship("Usuario", back_populates="boletos")
+    juego = relationship("Juego", back_populates="boletos")
+
+    def __repr__(self) -> str:
+        return (
+            f"<Boleto(id={self.id}, usuario_id={self.usuario_id}, juego_id={self.juego_id}, "
+            f"costo={self.costo}, fecha_creacion={self.fecha_creacion})>"
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convierte el objeto en un diccionario"""
+        return {
+            "id": self.id,
+            "usuario_id": self.usuario_id,
+            "juego_id": self.juego_id,
+            "numeros": self.numeros,
+            "costo": self.costo,
+            "fecha_creacion": self.fecha_creacion.isoformat() if self.fecha_creacion else None,
+            "fecha_actualizacion": self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None,
+            "creado_por": self.creado_por,
+            "actualizado_por": self.actualizado_por,
+        }
+
+
+
+
+class BoletoBase(BaseModel):
+    """Esquema base de Boleto"""
+    usuario_id: int = Field(..., description="ID del usuario que compra el boleto")
+    juego_id: int = Field(..., description="ID del juego asociado al boleto")
+    numeros: constr(regex=r"^\d+(,\d+)*$") = Field(..., description="Números del boleto en formato '5,10,23,45'")
+    costo: float = Field(..., gt=0, description="Costo del boleto")
+
+    @validator("numeros")
+    def normalizar_numeros(cls, v: str) -> str:
+        """Normaliza eliminando espacios innecesarios"""
+        numeros = [x.strip() for x in v.split(",")]
+        if not all(n.isdigit() for n in numeros):
+            raise ValueError("Todos los valores en 'numeros' deben ser enteros")
+        return ",".join(numeros)
+
+
+class BoletoCreate(BoletoBase):
+    """Esquema para crear un boleto"""
+    creado_por: str = Field(..., min_length=2, max_length=100, description="Usuario que crea el boleto")
+
+
+class BoletoBase(BaseModel):
+    numeros: Optional[str] = Field(
+        None, description="Números del boleto en formato '5,10,23,45'"
+    )
+    costo: float = Field(..., ge=0, description="Costo del boleto")
+
+    @validator("numeros")
+    def validar_numeros(cls, v: Optional[str]) -> Optional[str]:
+        if v:
+            # quitar espacios
+            v = v.strip()
+            # validar que solo tenga dígitos y comas
+            if not all(part.isdigit() for part in v.split(",")):
+                raise ValueError("Los números deben estar separados por comas y ser enteros")
+        return v
+
+class BoletoResponse(BoletoBase):
+    """Esquema de respuesta para boleto"""
+    id: int
+    fecha_creacion: datetime
+    fecha_actualizacion: Optional[datetime]
+    creado_por: str
+    actualizado_por: Optional[str]
+
+    class Config:
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
+
+
+class BoletoListResponse(BaseModel):
+    """Esquema para lista de boletos"""
+    boletos: List[BoletoResponse]
+    total: int
+    pagina: int
+    por_pagina: int
+
+    class Config:
+        from_attributes = True
