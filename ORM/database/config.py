@@ -8,11 +8,12 @@ Configuraciones centralizadas para la conexión a la base de datos.
 import os
 from typing import Optional
 
-# URL de la base de datos
-# Por defecto usa SQLite, pero puede cambiarse por PostgreSQL, MySQL, etc.
-DATABASE_URL: str = os.getenv(
-    "DATABASE_URL", 
-    "sqlite:///./ejemplo_orm.db"
+"""URL de la base de datos
+Por defecto usa SQLite, pero puede cambiarse por PostgreSQL, MySQL, etc. en este caso
+SE USARA PARA SQL SERVER""" 
+DATABASE_URL: str = (
+    "mssql+pyodbc://sa:2000719dhj@localhost,1433/LaUltimaApuesta"
+    "?driver=ODBC+Driver+17+for+SQL+Server"
 )
 
 # Configuraciones adicionales
