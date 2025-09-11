@@ -9,7 +9,7 @@ y crea las tablas definidas en los modelos.
 from ORM.database.database import check_connection, create_tables
 
 # Importa al menos un modelo para que se cree la tabla
-from ORM.entities.usuario import Usuario  
+from ORM.entities.usuario import Usuario
 
 if __name__ == "__main__":
     print("Verificando conexión con la base de datos...")

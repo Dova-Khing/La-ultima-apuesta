@@ -20,13 +20,13 @@ class PremioCRUD:
         juego_id: int,
         descripcion: str,
         valor: float,
-        creado_por: Optional[str] = None
+        creado_por: Optional[str] = None,
     ) -> Premio:
         premio = Premio(
             juego_id=juego_id,
             descripcion=descripcion,
             valor=valor,
-            creado_por=creado_por
+            creado_por=creado_por,
         )
         db.add(premio)
         db.commit()
@@ -47,7 +47,7 @@ class PremioCRUD:
         premio_id: int,
         descripcion: Optional[str] = None,
         valor: Optional[float] = None,
-        actualizado_por: Optional[str] = None
+        actualizado_por: Optional[str] = None,
     ) -> Optional[Premio]:
         premio = db.query(Premio).filter(Premio.id == premio_id).first()
         if not premio:

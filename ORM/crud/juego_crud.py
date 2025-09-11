@@ -20,13 +20,13 @@ class JuegoCRUD:
         nombre: str,
         descripcion: Optional[str],
         costo_base: float,
-        creado_por: Optional[str] = None
+        creado_por: Optional[str] = None,
     ) -> Juego:
         juego = Juego(
             nombre=nombre,
             descripcion=descripcion,
             costo_base=costo_base,
-            creado_por=creado_por
+            creado_por=creado_por,
         )
         db.add(juego)
         db.commit()
@@ -48,7 +48,7 @@ class JuegoCRUD:
         nombre: Optional[str] = None,
         descripcion: Optional[str] = None,
         costo_base: Optional[float] = None,
-        actualizado_por: Optional[str] = None
+        actualizado_por: Optional[str] = None,
     ) -> Optional[Juego]:
         juego = db.query(Juego).filter(Juego.id == juego_id).first()
         if not juego:

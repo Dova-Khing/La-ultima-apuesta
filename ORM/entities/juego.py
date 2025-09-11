@@ -9,6 +9,8 @@ from sqlalchemy import Column, Integer, String, DateTime, Float
 from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional, List, Dict, Any
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 from ..database.database import Base
 
@@ -30,14 +32,16 @@ class Juego(Base):
 
     __tablename__ = "juegos"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     nombre: str = Column(String(100), nullable=False)
     descripcion: Optional[str] = Column(String(255), nullable=True)
     costo_base: float = Column(Float, nullable=False, default=0.0)
 
     # Auditoría
     fecha_creacion: datetime = Column(DateTime, default=datetime.now, nullable=False)
-    fecha_actualizacion: datetime = Column(DateTime, default=datetime.now, onupdate=datetime.now, nullable=False)
+    fecha_actualizacion: datetime = Column(
+        DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
+    )
     creado_por: str = Column(String(100), nullable=False)
     actualizado_por: Optional[str] = Column(String(100), nullable=True)
 
@@ -54,8 +58,14 @@ class Juego(Base):
             "nombre": self.nombre,
             "descripcion": self.descripcion,
             "costo_base": self.costo_base,
-            "fecha_creacion": self.fecha_creacion.isoformat() if self.fecha_creacion else None,
-            "fecha_actualizacion": self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None,
+            "fecha_creacion": (
+                self.fecha_creacion.isoformat() if self.fecha_creacion else None
+            ),
+            "fecha_actualizacion": (
+                self.fecha_actualizacion.isoformat()
+                if self.fecha_actualizacion
+                else None
+            ),
             "creado_por": self.creado_por,
             "actualizado_por": self.actualizado_por,
         }
@@ -63,11 +73,20 @@ class Juego(Base):
 
 class JuegoBase(BaseModel):
     """Esquema base para Juego"""
-    nombre: str = Field(..., min_length=2, max_length=100, description="Nombre del juego")
-    descripcion: Optional[str] = Field(None, max_length=255, description="Descripción del juego")
+
+    nombre: str = Field(
+        ..., min_length=2, max_length=100, description="Nombre del juego"
+    )
+    descripcion: Optional[str] = Field(
+        None, max_length=255, description="Descripción del juego"
+    )
     costo_base: float = Field(..., ge=0, description="Costo mínimo para jugar")
-    creado_por: str = Field(..., min_length=2, max_length=100, description="Usuario que creó el juego")
-    actualizado_por: Optional[str] = Field(None, min_length=2, max_length=100, description="Usuario que actualizó el juego")
+    creado_por: str = Field(
+        ..., min_length=2, max_length=100, description="Usuario que creó el juego"
+    )
+    actualizado_por: Optional[str] = Field(
+        None, min_length=2, max_length=100, description="Usuario que actualizó el juego"
+    )
 
     @validator("nombre")
     def validar_nombre(cls, v: str) -> str:
@@ -96,11 +115,13 @@ class JuegoBase(BaseModel):
 
 class JuegoCreate(JuegoBase):
     """Esquema para crear un nuevo juego"""
+
     pass
 
 
 class JuegoUpdate(BaseModel):
     """Esquema para actualizar un juego"""
+
     nombre: Optional[str] = Field(None, min_length=2, max_length=100)
     descripcion: Optional[str] = Field(None, max_length=255)
     costo_base: Optional[float] = Field(None, ge=0)
@@ -127,19 +148,19 @@ class JuegoUpdate(BaseModel):
 
 class JuegoResponse(JuegoBase):
     """Esquema para respuesta de juego"""
+
     id: int
     fecha_creacion: datetime
     fecha_actualizacion: datetime
 
     class Config:
         from_attributes = True
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class JuegoListResponse(BaseModel):
     """Esquema para lista de juegos"""
+
     juegos: List[JuegoResponse]
     total: int
     pagina: int
