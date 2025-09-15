@@ -21,14 +21,14 @@ class PartidaCRUD:
         juego_id: int,
         costo_apuesta: float,
         estado: str,
-        premio_id: Optional[int] = None
+        premio_id: Optional[int] = None,
     ) -> Partida:
         partida = Partida(
             usuario_id=usuario_id,
             juego_id=juego_id,
             costo_apuesta=costo_apuesta,
             estado=estado,
-            premio_id=premio_id
+            premio_id=premio_id,
         )
         db.add(partida)
         db.commit()
@@ -48,7 +48,7 @@ class PartidaCRUD:
         db: Session,
         partida_id: int,
         estado: Optional[str] = None,
-        premio_id: Optional[int] = None
+        premio_id: Optional[int] = None,
     ) -> Optional[Partida]:
         partida = db.query(Partida).filter(Partida.id == partida_id).first()
         if not partida:

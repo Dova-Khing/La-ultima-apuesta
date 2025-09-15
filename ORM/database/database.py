@@ -5,14 +5,14 @@ Configuración y conexión a la base de datos
 Este módulo maneja la conexión a la base de datos usando SQLAlchemy.
 """
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from contextlib import contextmanager
 from typing import Generator
 import logging
-from sqlalchemy import text  # asegúrate de que esté importado arriba
-from .config import DATABASE_URL, DB_ECHO, DB_POOL_SIZE, DB_MAX_OVERFLOW
+from .config import DATABASE_URL, DB_ECHO, DB_MAX_OVERFLOW
+from sqlalchemy.engine import Engine
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -21,96 +21,84 @@ logger = logging.getLogger(__name__)
 # Crear la clase base para los modelos
 Base = declarative_base()
 
-# Configurar el motor de base de datos
+""" Configurar el motor de base de datos
+ NOTA: pool_size puede dar problemas en Neon, por eso se comenta.
+ """
 engine = create_engine(
     DATABASE_URL,
     echo=DB_ECHO,
-    pool_size=DB_POOL_SIZE,
     max_overflow=DB_MAX_OVERFLOW,
+    pool_pre_ping=True,
     # Configuraciones específicas para SQLite
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
 )
 
 # Crear la fábrica de sesiones
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-def get_engine():
+
+def get_engine() -> Engine:
     """Retorna el motor de base de datos"""
     return engine
+
 
 def get_session() -> Session:
     """
     Crea y retorna una nueva sesión de base de datos
-    
+
     Returns:
         Session: Sesión de SQLAlchemy
     """
     return SessionLocal()
 
+
 @contextmanager
 def get_session_context() -> Generator[Session, None, None]:
     """
     Context manager para manejar sesiones de base de datos
-    
+
     Yields:
         Session: Sesión de SQLAlchemy
-        
-    Example:
-        with get_session_context() as session:
-            user = session.query(Usuario).first()
     """
     session = SessionLocal()
     try:
         yield session
         session.commit()
-    except Exception as e:
-        logger.error(f"Error en la sesión: {e}")
-        session.rollback()
-        raise
     finally:
         session.close()
 
-def create_tables():
+
+def create_tables() -> None:
     """
     Crea todas las tablas definidas en los modelos
-    
+
     Esta función debe ser llamada después de importar todos los modelos
     para que SQLAlchemy pueda detectarlos.
     """
-    try:
-        logger.info("Creando tablas en la base de datos...")
-        Base.metadata.create_all(bind=engine)
-        logger.info("Tablas creadas exitosamente")
-    except Exception as e:
-        logger.error(f"Error al crear tablas: {e}")
-        raise
+    logger.info("Creando tablas en la base de datos...")
+    Base.metadata.create_all(bind=engine)
+    logger.info("Tablas creadas exitosamente")
 
-def drop_tables():
+
+def drop_tables() -> None:
     """
     Elimina todas las tablas de la base de datos
-    
-    ⚠️ CUIDADO: Esta función elimina TODOS los datos
+
+    CUIDADO: Esta función elimina TODOS los datos
     """
-    try:
-        logger.warning("Eliminando todas las tablas...")
-        Base.metadata.drop_all(bind=engine)
-        logger.info("Tablas eliminadas exitosamente")
-    except Exception as e:
-        logger.error(f"Error al eliminar tablas: {e}")
-        raise
+    logger.warning("Eliminando todas las tablas...")
+    Base.metadata.drop_all(bind=engine)
+    logger.info("Tablas eliminadas exitosamente")
+
 
 def check_connection() -> bool:
     """
     Verifica la conexión a la base de datos.
-    
+
     Returns:
         bool: True si la conexión es exitosa, False en caso contrario.
     """
-    try:
-        with engine.connect() as connection:
-            connection.execute(text("SELECT 1"))  # 👈 usa text()
-        logger.info("Conexión a la base de datos exitosa.")
-        return True
-    except Exception as e:
-        logger.error(f"Error de conexión a la base de datos: {e}")
-        return False
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+    logger.info("Conexión a la base de datos exitosa.")
+    return True
