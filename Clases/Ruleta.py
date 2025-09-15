@@ -2,13 +2,14 @@ import random
 import time
 from Clases.Usuario import Usuario
 
+
 class Ruleta:
-    def __init__(self, usuario: Usuario, costo_apuesta=10, premio=100)->None:
+    def __init__(self, usuario: Usuario, costo_apuesta=10, premio=100) -> None:
         self.usuario = usuario
         self.costo_apuesta = costo_apuesta
         self.premio = premio
 
-    def jugar(self)->None:
+    def jugar(self) -> None:
         # Descuento de dinero por jugar
         resultado = self.usuario.comprar_boleto(self.costo_apuesta)
         if "Fondos insuficientes" in resultado:  # Validación de saldo
@@ -18,9 +19,9 @@ class Ruleta:
         print("\n Opciones Ruleta:")
         print(" - Ingresa 'rojo' o 'negro'")
         print(" - Ingresa un número del 0 al 36")
-        eleccion:str = input("Tu apuesta: ").lower()
+        eleccion: str = input("Tu apuesta: ").lower()
 
-            # Convertir a número si corresponde
+        # Convertir a número si corresponde
         if eleccion.isdigit():
             eleccion = int(eleccion)
 
@@ -43,7 +44,7 @@ class Ruleta:
 
         # Simulación de la ruleta
         time.sleep(1)
-        numero = random.randint(0, 36)          # Número ganador
+        numero = random.randint(0, 36)  # Número ganador
         color = random.choice(["rojo", "negro"])  # Color ganador
         print(f"La bola cayó en: {numero} {color}")
 
@@ -65,4 +66,3 @@ class Ruleta:
 
         # Si no acierta nada → pierde
         print(" Perdiste la apuesta.")
-

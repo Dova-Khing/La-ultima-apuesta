@@ -1,27 +1,42 @@
 from .usuario import Usuario, UsuarioCreate, UsuarioUpdate, UsuarioResponse
 from .juego import Juego, JuegoCreate, JuegoUpdate, JuegoResponse
 from .partida import Partida, PartidaCreate, PartidaUpdate, PartidaResponse
-from .historial_saldo import HistorialSaldo, HistorialSaldoCreate, HistorialSaldoResponse
+from .historial_saldo import (
+    HistorialSaldo,
+    HistorialSaldoCreate,
+    HistorialSaldoResponse,
+)
 from .Boleto import Boleto, BoletoCreate, BoletoUpdate, BoletoResponse
 from .premio import Premio, PremioCreate, PremioUpdate, PremioResponse
 
 __all__ = [
     # Usuario
-    "Usuario", "UsuarioCreate", "UsuarioUpdate", "UsuarioResponse",
-
+    "Usuario",
+    "UsuarioCreate",
+    "UsuarioUpdate",
+    "UsuarioResponse",
     # Juego
-    "Juego", "JuegoCreate", "JuegoUpdate", "JuegoResponse",
-
+    "Juego",
+    "JuegoCreate",
+    "JuegoUpdate",
+    "JuegoResponse",
     # Partida
-    "Partida", "PartidaCreate", "PartidaUpdate", "PartidaResponse",
-
+    "Partida",
+    "PartidaCreate",
+    "PartidaUpdate",
+    "PartidaResponse",
     # HistorialSaldo
-    "HistorialSaldo", "HistorialSaldoCreate", "HistorialSaldoResponse",
-
+    "HistorialSaldo",
+    "HistorialSaldoCreate",
+    "HistorialSaldoResponse",
     # Boleto
-    "Boleto", "BoletoCreate", "BoletoUpdate", "BoletoResponse",
-
+    "Boleto",
+    "BoletoCreate",
+    "BoletoUpdate",
+    "BoletoResponse",
     # Premio
-    "Premio", "PremioCreate", "PremioUpdate", "PremioResponse",
-
+    "Premio",
+    "PremioCreate",
+    "PremioUpdate",
+    "PremioResponse",
 ]

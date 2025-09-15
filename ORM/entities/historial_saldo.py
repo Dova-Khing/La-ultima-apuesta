@@ -10,6 +10,8 @@ from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional, List, Dict, Any
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 from ..database.database import Base
 
@@ -23,7 +25,7 @@ class HistorialSaldo(Base):
 
     __tablename__ = "historial_saldo"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     usuario_id: int = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     tipo: str = Column(String(20), nullable=False)  # recarga, apuesta, premio
     monto: float = Column(Float, nullable=False)
@@ -53,12 +55,16 @@ class HistorialSaldo(Base):
 # ESQUEMAS Pydantic
 # ===============================
 
+
 class HistorialSaldoBase(BaseModel):
     """Esquema base de HistorialSaldo"""
+
     usuario_id: int = Field(..., description="ID del usuario")
     tipo: str = Field(..., description="Tipo de movimiento: recarga, apuesta, premio")
     monto: float = Field(..., gt=0, description="Monto del movimiento")
-    fecha: datetime = Field(default_factory=datetime.now, description="Fecha del movimiento")
+    fecha: datetime = Field(
+        default_factory=datetime.now, description="Fecha del movimiento"
+    )
 
     @validator("tipo")
     def validar_tipo(cls, v: str) -> str:
@@ -70,6 +76,7 @@ class HistorialSaldoBase(BaseModel):
 
 class HistorialSaldoCreate(HistorialSaldoBase):
     """Esquema para crear un nuevo historial de saldo"""
+
     # fecha se genera automáticamente, no se debe enviar desde fuera
     class Config:
         extra = "forbid"
@@ -77,7 +84,8 @@ class HistorialSaldoCreate(HistorialSaldoBase):
 
 class HistorialSaldoUpdate(BaseModel):
     """Esquema para actualizar historial de saldo"""
-    # ⚠️ No permitimos modificar fecha ni usuario_id
+
+    # No permitimos modificar fecha ni usuario_id
     tipo: Optional[str] = Field(None, description="Tipo de movimiento")
     monto: Optional[float] = Field(None, gt=0)
 
@@ -93,17 +101,17 @@ class HistorialSaldoUpdate(BaseModel):
 
 class HistorialSaldoResponse(HistorialSaldoBase):
     """Esquema de respuesta para historial de saldo"""
+
     id: int
 
     class Config:
         from_attributes = True
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class HistorialSaldoListResponse(BaseModel):
     """Esquema de lista de historial de saldo"""
+
     historial: List[HistorialSaldoResponse]
     total: int
     pagina: int
