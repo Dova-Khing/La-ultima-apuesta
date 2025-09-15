@@ -17,10 +17,12 @@ class UsuarioCRUD:
     """Clase para operaciones CRUD de Usuario"""
 
     @staticmethod
-    def crear_usuario(db: Session, nombre: str, edad: str, saldo_inicial: int) -> Usuario:
+    def crear_usuario(
+        db: Session, nombre: str, edad: str, saldo_inicial: int
+    ) -> Usuario:
         """
         Crea un nuevo usuario
-        
+
         Args:
             db: Sesión de base de datos
             nombre: Nombre del usuario
@@ -30,11 +32,7 @@ class UsuarioCRUD:
         Returns:
             Usuario: Usuario creado
         """
-        usuario = Usuario(
-            nombre=nombre,
-            edad=edad,
-            saldo_inicial=saldo_inicial
-        )
+        usuario = Usuario(nombre=nombre, edad=edad, saldo_inicial=saldo_inicial)
 
         db.add(usuario)
         db.commit()
@@ -52,11 +50,16 @@ class UsuarioCRUD:
         return db.query(Usuario).offset(skip).limit(limit).all()
 
     @staticmethod
-    def actualizar_usuario(db: Session, usuario_id: int, nombre: Optional[str] = None,
-                           edad: Optional[str] = None, saldo_inicial: Optional[int] = None) -> Optional[Usuario]:
+    def actualizar_usuario(
+        db: Session,
+        usuario_id: int,
+        nombre: Optional[str] = None,
+        edad: Optional[str] = None,
+        saldo_inicial: Optional[int] = None,
+    ) -> Optional[Usuario]:
         """
         Actualiza un usuario existente
-        
+
         Args:
             db: Sesión de base de datos
             usuario_id: ID del usuario
@@ -86,7 +89,7 @@ class UsuarioCRUD:
     def eliminar_usuario(db: Session, usuario_id: int) -> bool:
         """
         Elimina un usuario permanentemente
-        
+
         Args:
             db: Sesión de base de datos
             usuario_id: ID del usuario a eliminar

@@ -10,6 +10,8 @@ from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional, List, Dict, Any
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 from ..database.database import Base
 
@@ -31,7 +33,7 @@ class Premio(Base):
 
     __tablename__ = "premios"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
+    id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     juego_id: int = Column(Integer, ForeignKey("juegos.id"), nullable=False)
     descripcion: str = Column(String(255), nullable=False)
     valor: float = Column(Float, nullable=False, default=0.0)
@@ -56,18 +58,26 @@ class Premio(Base):
             "juego_id": self.juego_id,
             "descripcion": self.descripcion,
             "valor": self.valor,
-            "fecha_creacion": self.fecha_creacion.isoformat() if self.fecha_creacion else None,
-            "fecha_actualizacion": self.fecha_actualizacion.isoformat() if self.fecha_actualizacion else None,
+            "fecha_creacion": (
+                self.fecha_creacion.isoformat() if self.fecha_creacion else None
+            ),
+            "fecha_actualizacion": (
+                self.fecha_actualizacion.isoformat()
+                if self.fecha_actualizacion
+                else None
+            ),
             "creado_por": self.creado_por,
             "actualizado_por": self.actualizado_por,
         }
 
 
-
 class PremioBase(BaseModel):
     """Esquema base para Premio"""
+
     juego_id: int = Field(..., description="ID del juego asociado")
-    descripcion: str = Field(..., min_length=2, max_length=255, description="Descripción del premio")
+    descripcion: str = Field(
+        ..., min_length=2, max_length=255, description="Descripción del premio"
+    )
     valor: float = Field(..., ge=0, description="Valor del premio")
 
     @validator("descripcion")
@@ -85,14 +95,18 @@ class PremioBase(BaseModel):
 
 class PremioCreate(PremioBase):
     """Esquema para crear un nuevo premio"""
+
     creado_por: Optional[str] = Field(None, description="Usuario que crea el premio")
 
 
 class PremioUpdate(BaseModel):
     """Esquema para actualizar un premio"""
+
     descripcion: Optional[str] = Field(None, min_length=2, max_length=255)
     valor: Optional[float] = Field(None, ge=0)
-    actualizado_por: Optional[str] = Field(None, description="Usuario que actualiza el premio")
+    actualizado_por: Optional[str] = Field(
+        None, description="Usuario que actualiza el premio"
+    )
 
     @validator("descripcion")
     def validar_descripcion(cls, v: Optional[str]) -> Optional[str]:
@@ -109,6 +123,7 @@ class PremioUpdate(BaseModel):
 
 class PremioResponse(PremioBase):
     """Esquema para respuesta de premio"""
+
     id: int
     fecha_creacion: datetime
     fecha_actualizacion: datetime
@@ -117,13 +132,12 @@ class PremioResponse(PremioBase):
 
     class Config:
         from_attributes = True
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class PremioListResponse(BaseModel):
     """Esquema para lista de premios"""
+
     premios: List[PremioResponse]
     total: int
     pagina: int

@@ -21,14 +21,14 @@ class BoletoCRUD:
         juego_id: int,
         numeros: Optional[str],
         costo: float,
-        creado_por: Optional[str] = None
+        creado_por: Optional[str] = None,
     ) -> Boleto:
         boleto = Boleto(
             usuario_id=usuario_id,
             juego_id=juego_id,
             numeros=numeros,
             costo=costo,
-            creado_por=creado_por
+            creado_por=creado_por,
         )
         db.add(boleto)
         db.commit()
@@ -48,7 +48,7 @@ class BoletoCRUD:
         db: Session,
         boleto_id: int,
         numeros: Optional[str] = None,
-        actualizado_por: Optional[str] = None
+        actualizado_por: Optional[str] = None,
     ) -> Optional[Boleto]:
         boleto = db.query(Boleto).filter(Boleto.id == boleto_id).first()
         if not boleto:

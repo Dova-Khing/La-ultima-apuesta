@@ -1,0 +1,42 @@
+# Ignorar el directorio de pycache
+__pycache__/
+
+# Ignorar archivos compilados de Python
+*.py[cod]
+
+# Ignorar entornos virtuales
+.venv/
+venv/
+env/
+
+# Ignorar archivos de configuración de entorno (como .env)
+.env
+
+# Ignorar archivos específicos de bases de datos locales
+*.sqlite
+*.db
+
+# Ignorar archivos de SQLAlchemy (si utilizas un archivo de migraciones o un dump de base de datos)
+*.sql
+
+# Ignorar archivos temporales del editor (por ejemplo, Vim, Emacs)
+*.swp
+*.swo
+
+# Ignorar archivos de logs (en caso de que los tengas)
+*.log
+
+# Ignorar archivos generados por Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Ignorar archivos específicos de OS como .DS_Store (Mac) o Thumbs.db (Windows)
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de configuraciones de IDE (Visual Studio Code, PyCharm, etc)
+.vscode/
+.idea/
+
+# Ignorar archivos específicos de dependencias si usas pipenv o poetry
+Pipfile.lock
+poetry.lock
