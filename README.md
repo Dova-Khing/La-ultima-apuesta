@@ -98,28 +98,7 @@ DB_USERNAME=tu-usuario
 DB_PASSWORD=tu-password
 ```
 
-### 4. Verificar la conexión
-
-Ejecuta el script de prueba para verificar que la conexión funciona:
-
-```bash
-python test_connection.py
-```
-
-### 5. Crear las tablas automáticamente (Método Recomendado)
-
-#### Opción A: Usar test_connection.py (Más fácil)
-```bash
-python test_connection.py
-```
-
-Este script:
-- Verifica la conexión a Neon
-- Crea automáticamente todas las tablas definidas en las entidades
-- Muestra información de la base de datos
-- Confirma que todo está funcionando
-
-#### Opción B: Usar migraciones con Alembic (Para proyectos avanzados)
+### 4. Crear las tablas automáticamente
 
 Si prefieres usar migraciones (recomendado para proyectos en producción):
 
@@ -146,5 +125,5 @@ alembic upgrade head
 Ejecuta el script principal para verificar que todo está funcionando:
 
 ```bash
-python main.py
+   python ORM/login.py
 ```
