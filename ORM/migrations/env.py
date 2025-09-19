@@ -12,7 +12,7 @@ from ORM.entities.premio import Premio
 from ORM.entities.Boleto import Boleto
 from ORM.entities.historial_saldo import HistorialSaldo
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../..")
+sys.path.append(os.path.dirname(os.path.abspath(_file_)) + "/../..")
 load_dotenv()
 
 config = context.config
