@@ -13,7 +13,8 @@ from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class HistorialSaldo(Base):
@@ -26,34 +27,35 @@ class HistorialSaldo(Base):
     __tablename__ = "historial_saldo"
 
     id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    usuario_id: int = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey("usuarios.id"), nullable=False)
     tipo: str = Column(String(20), nullable=False)  # recarga, apuesta, premio
     monto: float = Column(Float, nullable=False)
     fecha: datetime = Column(DateTime, default=datetime.now, nullable=False)
 
-    # Relaciones
     usuario = relationship("Usuario", back_populates="historial_saldo")
 
-    def __repr__(self) -> str:
-        return (
-            f"<HistorialSaldo(id={self.id}, usuario_id={self.usuario_id}, "
-            f"tipo='{self.tipo}', monto={self.monto}, fecha={self.fecha})>"
-        )
 
-    def to_dict(self) -> Dict[str, Any]:
-        """Convierte el objeto en un diccionario"""
-        return {
-            "id": self.id,
-            "usuario_id": self.usuario_id,
-            "tipo": self.tipo,
-            "monto": self.monto,
-            "fecha": self.fecha.isoformat() if self.fecha else None,
-        }
+def __repr__(self) -> str:
+    return (
+        f"<HistorialSaldo(id={self.id}, usuario_id={self.usuario_id}, "
+        f"tipo='{self.tipo}', monto={self.monto}, fecha={self.fecha})>"
+    )
 
 
-# ===============================
-# ESQUEMAS Pydantic
-# ===============================
+def to_dict(self) -> Dict[str, Any]:
+    """Convierte el objeto en un diccionario"""
+    return {
+        "id": self.id,
+        "usuario_id": self.usuario_id,
+        "tipo": self.tipo,
+        "monto": self.monto,
+        "fecha": self.fecha.isoformat() if self.fecha else None,
+    }
+
+
+"""
+ ESQUEMAS Pydantic
+"""
 
 
 class HistorialSaldoBase(BaseModel):
@@ -77,7 +79,6 @@ class HistorialSaldoBase(BaseModel):
 class HistorialSaldoCreate(HistorialSaldoBase):
     """Esquema para crear un nuevo historial de saldo"""
 
-    # fecha se genera automáticamente, no se debe enviar desde fuera
     class Config:
         extra = "forbid"
 
@@ -85,7 +86,6 @@ class HistorialSaldoCreate(HistorialSaldoBase):
 class HistorialSaldoUpdate(BaseModel):
     """Esquema para actualizar historial de saldo"""
 
-    # No permitimos modificar fecha ni usuario_id
     tipo: Optional[str] = Field(None, description="Tipo de movimiento")
     monto: Optional[float] = Field(None, gt=0)
 

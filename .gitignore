@@ -1,42 +1,78 @@
-# Ignorar el directorio de pycache
+# Byte-compiled / optimized / DLL files
 __pycache__/
-
-# Ignorar archivos compilados de Python
 *.py[cod]
+*$py.class
 
-# Ignorar entornos virtuales
-.venv/
+# C extensions
+*.so
+
+# Virtual environment
 venv/
+.env/
+.venv/
 env/
+ENV/
+*.env
 
-# Ignorar archivos de configuración de entorno (como .env)
-.env
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
 
-# Ignorar archivos específicos de bases de datos locales
-*.sqlite
-*.db
-
-# Ignorar archivos de SQLAlchemy (si utilizas un archivo de migraciones o un dump de base de datos)
-*.sql
-
-# Ignorar archivos temporales del editor (por ejemplo, Vim, Emacs)
-*.swp
-*.swo
-
-# Ignorar archivos de logs (en caso de que los tengas)
-*.log
-
-# Ignorar archivos generados por Jupyter Notebooks
-.ipynb_checkpoints/
-
-# Ignorar archivos específicos de OS como .DS_Store (Mac) o Thumbs.db (Windows)
-.DS_Store
-Thumbs.db
-
-# Ignorar archivos de configuraciones de IDE (Visual Studio Code, PyCharm, etc)
+# VS Code config
 .vscode/
+
+# PyCharm
 .idea/
 
-# Ignorar archivos específicos de dependencias si usas pipenv o poetry
-Pipfile.lock
-poetry.lock
+# mypy
+.mypy_cache/
+
+# Pyre type checker
+.pyre/
+
+# Pytype
+.pytype/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Pytest
+.pytest_cache/
+
+# SQLAlchemy / Alembic (migraciones)
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+alembic.ini
+
+# Logs
+*.log
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db

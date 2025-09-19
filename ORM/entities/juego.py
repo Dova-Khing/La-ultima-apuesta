@@ -12,7 +12,8 @@ from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class Juego(Base):
@@ -37,7 +38,6 @@ class Juego(Base):
     descripcion: Optional[str] = Column(String(255), nullable=True)
     costo_base: float = Column(Float, nullable=False, default=0.0)
 
-    # Auditoría
     fecha_creacion: datetime = Column(DateTime, default=datetime.now, nullable=False)
     fecha_actualizacion: datetime = Column(
         DateTime, default=datetime.now, onupdate=datetime.now, nullable=False

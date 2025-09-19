@@ -15,7 +15,8 @@ from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class Usuario(Base):
