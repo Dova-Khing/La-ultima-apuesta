@@ -26,7 +26,7 @@ class HistorialSaldo(Base):
     __tablename__ = "historial_saldo"
 
     id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    usuario_id: int = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey("usuarios.id"), nullable=False)
     tipo: str = Column(String(20), nullable=False)  # recarga, apuesta, premio
     monto: float = Column(Float, nullable=False)
     fecha: datetime = Column(DateTime, default=datetime.now, nullable=False)

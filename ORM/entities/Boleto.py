@@ -26,8 +26,8 @@ class Boleto(Base):
     __tablename__ = "boletos"
 
     id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    usuario_id: int = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
-    juego_id: int = Column(Integer, ForeignKey("juegos.id"), nullable=False)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey("usuarios.id"), nullable=False)
+    juego_id = Column(UUID(as_uuid=True), ForeignKey("juegos.id"), nullable=False)
     numeros: str = Column(String(255), nullable=False)  # Ejemplo: "5,10,23,45"
     costo: float = Column(Float, nullable=False)
 

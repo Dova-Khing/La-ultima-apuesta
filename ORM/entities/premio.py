@@ -34,7 +34,7 @@ class Premio(Base):
     __tablename__ = "premios"
 
     id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    juego_id: int = Column(Integer, ForeignKey("juegos.id"), nullable=False)
+    juego_id = Column(UUID(as_uuid=True), ForeignKey("juegos.id"), nullable=False)
     descripcion: str = Column(String(255), nullable=False)
     valor: float = Column(Float, nullable=False, default=0.0)
 
