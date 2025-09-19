@@ -10,31 +10,25 @@ from .Boleto import Boleto, BoletoCreate, BoletoUpdate, BoletoResponse
 from .premio import Premio, PremioCreate, PremioUpdate, PremioResponse
 
 __all__ = [
-    # Usuario
     "Usuario",
     "UsuarioCreate",
     "UsuarioUpdate",
     "UsuarioResponse",
-    # Juego
     "Juego",
     "JuegoCreate",
     "JuegoUpdate",
     "JuegoResponse",
-    # Partida
     "Partida",
     "PartidaCreate",
     "PartidaUpdate",
     "PartidaResponse",
-    # HistorialSaldo
     "HistorialSaldo",
     "HistorialSaldoCreate",
     "HistorialSaldoResponse",
-    # Boleto
     "Boleto",
     "BoletoCreate",
     "BoletoUpdate",
     "BoletoResponse",
-    # Premio
     "Premio",
     "PremioCreate",
     "PremioUpdate",
