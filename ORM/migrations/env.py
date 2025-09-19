@@ -5,8 +5,14 @@ from alembic import context
 import os
 import sys
 from dotenv import load_dotenv
+from ORM.entities.usuario import Usuario
+from ORM.entities.juego import Juego
+from ORM.entities.partida import Partida
+from ORM.entities.premio import Premio
+from ORM.entities.Boleto import Boleto
+from ORM.entities.historial_saldo import HistorialSaldo
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
+sys.path.append(os.path.dirname(os.path.abspath(_file_)) + "/../..")
 load_dotenv()
 
 config = context.config
@@ -14,7 +20,7 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-from entities.base import Base
+from ORM.database.database import Base
 
 target_metadata = Base.metadata
 
@@ -27,13 +33,11 @@ def run_migrations_offline():
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
-
     with context.begin_transaction():
         context.run_migrations()
 
 
 def run_migrations_online():
-    # Usa la variable de entorno en lugar de la configuración del archivo
     database_url = os.getenv("DATABASE_URL")
     connectable = engine_from_config(
         {"sqlalchemy.url": database_url},
