@@ -1,60 +1,129 @@
-#  Sistema de Lotería y Apuestas  
+# Proyecto ORM - Juegos (Bingo, Ruleta y Lotería)
 
-Este proyecto es una simulación de **juegos de azar en consola** desarrollada en **Python**.  
-El usuario puede crear su cuenta ingresando **nombre, edad y saldo inicial** (con validaciones incluidas).  
-Una vez creado, podrá jugar:  
+Este proyecto implementa un sistema de juegos de azar (Bingo, Ruleta y Lotería) utilizando **SQLAlchemy** con conexión a **PostgreSQL** (Neon Database).  
+Incluye operaciones CRUD, validaciones con Pydantic y soporte para migraciones con Alembic.
 
-- **Bingo**  
-- **Ruleta**  
-- **Lotería**  
 
-Cada juego descuenta el costo correspondiente del saldo y entrega premios en caso de ganar.  
+## Recursos Adicionales
 
----
+### Documentación Oficial
+- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+- [Alembic Documentation](https://alembic.sqlalchemy.org/)
+- [Neon Documentation](https://neon.tech/docs)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
-##  Requisitos previos  
----
-Antes de ejecutar el proyecto, asegúrate de tener instalado:  
+## Inicio Rápido
 
--  **Python 3.8 o superior** → [Descargar aquí](https://www.python.org/downloads/)  
-- **Git** (para clonar el repositorio) → [Descargar aquí](https://git-scm.com/downloads)  
+Si quieres empezar inmediatamente:
 
->  No necesitas instalar librerías externas, solo la **librería estándar de Python**.  
+1. **Instala las dependencias:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
----
+2. **Configura Neon:**
+   - Crea una cuenta en [neon.tech](https://neon.tech)
+   - Crea un nuevo proyecto
+   - Copia la cadena de conexión
 
-##  Instalación y ejecución  
+3. **Configura las variables de entorno:**
+   ```bash
+   cp env.example .env
+   # Edita .env con tu cadena de conexión de Neon
+   ```
 
-1. **Clonar el repositorio**  
+4. **Crea las tablas automáticamente:**
+   ```bash
+   alembic revision --autogenerate -m "migracion_inicial"
+   alembic upgrade heads
+   ```
+
+5. **¡Ejecuta el proyecto!**
+   ```bash
+   python ORM/login.py
+   ```
+
+¿Necesitas más detalles? Continúa leyendo la guía completa abajo.
+
+## Instalación y Configuración
+
+### 1. Instalar dependencias
+
 ```bash
-git clone https://github.com/Dova-Khing/La-ultima-apuesta.git 
+pip install -r requirements.txt
 ```
 
-2. **Entrar en la carpeta del proyecto**
-Para ejecutar esto necesitas abrir la consola de comandos del editor o del propio windows 
+### 2. Configurar Neon Database
+
+#### Paso 1: Crear cuenta en Neon
+1. Ve a [neon.tech](https://neon.tech) y crea una cuenta gratuita
+2. Inicia sesión en tu dashboard de Neon
+
+#### Paso 2: Crear una nueva base de datos
+1. En el dashboard, haz clic en "Create Project"
+2. Elige un nombre para tu proyecto (ej: `mi-proyecto-orm`)
+3. Selecciona la región más cercana a tu ubicación
+4. Haz clic en "Create Project"
+
+#### Paso 3: Obtener la cadena de conexión
+1. Una vez creado el proyecto, ve a la sección "Connection Details"
+2. Copia la cadena de conexión que aparece (algo como: `postgresql://usuario:password@host/database?sslmode=require`)
+3. También anota los datos individuales:
+   - **Host**: El host de tu base de datos
+   - **Database**: El nombre de la base de datos
+   - **Username**: Tu nombre de usuario
+   - **Password**: Tu contraseña
+   - **Port**: 5432 (por defecto)
+
+### 3. Configurar variables de entorno
+
+1. Copia el archivo de ejemplo:
 ```bash
-cd C:\Users\'Tu nombre de usuario'\La-ultima-apuesta
+cp env.example .env
 ```
 
-3. **Ejecutar el programa principal desde la consola:**
-```bash
-python main.py 
+2. Edita el archivo `.env` con tus credenciales reales de Neon:
+
+**Opción A: Usar la cadena de conexión completa (Recomendado)**
+```env
+DATABASE_URL=postgresql://usuario:password@host/database?sslmode=require
 ```
- Importante: este proyecto se ejecuta en consola/terminal. No es una aplicación gráfica.
 
-##  Cómo jugar
+**Opción B: Usar variables individuales**
+```env
+DB_HOST=tu-host.neon.tech
+DB_PORT=5432
+DB_NAME=tu-base-de-datos
+DB_USERNAME=tu-usuario
+DB_PASSWORD=tu-password
+```
 
-1. Ingresa tu **nombre**, **edad** y **saldo inicial**.
-   - La edad debe ser **mayor a 18**.
-   - El saldo debe ser **mayor a 0**.
+### 4. Crear las tablas automáticamente
 
-2. Elige entre los juegos disponibles:
+Si prefieres usar migraciones (recomendado para proyectos en producción):
 
-   -  **Bingo** → Se genera automáticamente un cartón y se sortean números hasta 30 intentos.  
-   -  **Ruleta** → Apuesta a un número (0-36) o a un color (Rojo/Negro).  
-      Si ingresas algo inválido, el sistema lo tomará como **Negro o 1**.  
-   -  **Lotería** → Compra boletos y participa en el sorteo.  
+##### Paso 1: Inicializar Alembic (solo la primera vez)
+```bash
+alembic init migrations
+```
 
-3. Resultados:
-   -  **Si ganas**, tu saldo aumentará según el premio.  
-   -  **Si pierdes**, verás un mensaje y tu saldo se mantendrá o disminuirá.  
+##### Paso 2: Configurar alembic.ini
+El archivo `alembic.ini` ya está configurado, pero si necesitas modificarlo, asegúrate de que la línea `sqlalchemy.url` esté comentada o vacía, ya que usaremos las variables de entorno.
+
+##### Paso 3: Crear la primera migración
+```bash
+alembic revision --autogenerate -m "Initial migration"
+```
+
+##### Paso 4: Aplicar las migraciones
+```bash
+alembic upgrade head
+```
+
+### 6. Verificar que todo funciona
+
+Ejecuta el script principal para verificar que todo está funcionando:
+
+```bash
+   python ORM/login.py
+```
