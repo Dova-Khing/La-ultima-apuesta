@@ -49,6 +49,7 @@ coverage.xml
 alembic/versions/*.pyc
 alembic/versions/__pycache__/
 alembic.ini
+alembic/
 
 # Logs
 *.log
@@ -76,3 +77,4 @@ var/
 # Windows
 Thumbs.db
 ehthumbs.db
+
