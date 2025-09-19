@@ -1,32 +1,35 @@
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 from alembic import context
 import os
 import sys
 from dotenv import load_dotenv
+
+# --- Asegurarse de que Python encuentre el paquete ORM ---
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
+# Cargar variables de entorno
+load_dotenv()
+
+# Importar entidades y Base
 from ORM.entities.usuario import Usuario
 from ORM.entities.juego import Juego
 from ORM.entities.partida import Partida
 from ORM.entities.premio import Premio
 from ORM.entities.Boleto import Boleto
 from ORM.entities.historial_saldo import HistorialSaldo
+from ORM.entities.base import Base
 
-sys.path.append(os.path.dirname(os.path.abspath(_file_)) + "/../..")
-load_dotenv()
 
 config = context.config
-
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-from ORM.database.database import Base
 
 target_metadata = Base.metadata
 
 
 def run_migrations_offline():
-    url = config.get_main_option("sqlalchemy.url")
+    url = config.get_main_option("sqlalchemy.url") or os.getenv("DATABASE_URL")
     context.configure(
         url=url,
         target_metadata=target_metadata,
