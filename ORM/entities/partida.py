@@ -13,7 +13,8 @@ from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class Partida(Base):
@@ -33,14 +34,13 @@ class Partida(Base):
     __tablename__ = "partidas"
 
     id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    usuario_id: int = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
-    juego_id: int = Column(Integer, ForeignKey("juegos.id"), nullable=False)
+    usuario_id = Column(UUID(as_uuid=True), ForeignKey("usuarios.id"), nullable=False)
+    juego_id = Column(UUID(as_uuid=True), ForeignKey("juegos.id"), nullable=False)
     costo_apuesta: float = Column(Float, nullable=False)
-    premio_id: Optional[int] = Column(Integer, ForeignKey("premios.id"), nullable=True)
+    premio_id = Column(UUID(as_uuid=True), ForeignKey("premios.id"))
     fecha: datetime = Column(DateTime, default=datetime.now, nullable=False)
     estado: str = Column(String(20), nullable=False)
 
-    # Relaciones
     usuario = relationship("Usuario", back_populates="partidas")
     juego = relationship("Juego", back_populates="partidas")
     premio = relationship("Premio", back_populates="partidas")

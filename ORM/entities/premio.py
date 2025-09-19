@@ -13,7 +13,8 @@ from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class Premio(Base):
@@ -34,7 +35,7 @@ class Premio(Base):
     __tablename__ = "premios"
 
     id: uuid.UUID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    juego_id: int = Column(Integer, ForeignKey("juegos.id"), nullable=False)
+    juego_id = Column(UUID(as_uuid=True), ForeignKey("juegos.id"), nullable=False)
     descripcion: str = Column(String(255), nullable=False)
     valor: float = Column(Float, nullable=False, default=0.0)
 
@@ -45,7 +46,6 @@ class Premio(Base):
     creado_por: Optional[str] = Column(String(100), nullable=True)
     actualizado_por: Optional[str] = Column(String(100), nullable=True)
 
-    # relación con Juego
     juego = relationship("Juego", backref="premios")
 
     def __repr__(self) -> str:
