@@ -13,7 +13,8 @@ from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class Partida(Base):
@@ -40,7 +41,6 @@ class Partida(Base):
     fecha: datetime = Column(DateTime, default=datetime.now, nullable=False)
     estado: str = Column(String(20), nullable=False)
 
-    # Relaciones
     usuario = relationship("Usuario", back_populates="partidas")
     juego = relationship("Juego", back_populates="partidas")
     premio = relationship("Premio", back_populates="partidas")

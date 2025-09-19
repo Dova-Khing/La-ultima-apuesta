@@ -13,7 +13,8 @@ from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
-from ..database.database import Base
+
+from .base import Base
 
 
 class Premio(Base):
@@ -45,7 +46,6 @@ class Premio(Base):
     creado_por: Optional[str] = Column(String(100), nullable=True)
     actualizado_por: Optional[str] = Column(String(100), nullable=True)
 
-    # relación con Juego
     juego = relationship("Juego", backref="premios")
 
     def __repr__(self) -> str:
