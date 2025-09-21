@@ -1,5 +1,5 @@
 """
-Sistema de gestion de productos con ORM SQLAlchemy y Neon PostgreSQL
+Sistema de gestion de partidas con ORM SQLAlchemy y Neon PostgreSQL
 Incluye sistema de autenticacion con login
 """
 
@@ -7,13 +7,14 @@ import getpass
 from typing import Optional
 
 from auth.security import PasswordManager
-from crud.categoria_crud import CategoriaCRUD
-from crud.producto_crud import ProductoCRUD
+from crud.Boleto_crud import BoletoCRUD
+from crud.partida_crud import PartidaCRUD
 from crud.usuario_crud import UsuarioCRUD
 from database.config import SessionLocal, create_tables
-from entities.categoria import Categoria
-from entities.producto import Producto
+from entities.Boleto import Boleto
+from entities.partida import Partida
 from entities.usuario import Usuario
+from entities.juego import Juego
 
 
 class SistemaGestion:
@@ -23,8 +24,8 @@ class SistemaGestion:
         """Inicializar el sistema"""
         self.db = SessionLocal()
         self.usuario_crud = UsuarioCRUD(self.db)
-        self.categoria_crud = CategoriaCRUD(self.db)
-        self.producto_crud = ProductoCRUD(self.db)
+        self.Boleto_crud = BoletoCRUD(self.db)
+        self.partida_crud = PartidaCRUD(self.db)
         self.usuario_actual: Optional[Usuario] = None
 
     def __enter__(self):
@@ -38,7 +39,7 @@ class SistemaGestion:
     def mostrar_pantalla_login(self) -> bool:
         """Mostrar pantalla de login y autenticar usuario"""
         print("\n" + "=" * 50)
-        print("        SISTEMA DE GESTION DE PRODUCTOS")
+        print("        SISTEMA DE GESTION DE partidaS")
         print("=" * 50)
         print("INICIAR SESION")
         print("=" * 50)
@@ -92,7 +93,7 @@ class SistemaGestion:
     def mostrar_menu_principal_autenticado(self) -> None:
         """Mostrar el menu principal para usuario autenticado"""
         print("\n" + "=" * 50)
-        print("    SISTEMA DE GESTION DE PRODUCTOS")
+        print("    SISTEMA DE GESTION DE partidaS")
         print("=" * 50)
         print(f"Usuario: {self.usuario_actual.nombre}")
         print(f"Email: {self.usuario_actual.email}")
@@ -100,8 +101,8 @@ class SistemaGestion:
             print("Administrador")
         print("=" * 50)
         print("1. Gestion de Usuarios")
-        print("2. Gestion de Categorias")
-        print("3. Gestion de Productos")
+        print("2. Gestion de Boletos")
+        print("3. Gestion de partidas")
         print("4. Consultas y Reportes")
         print("5. Configuracion del Sistema")
         print("6. Mi Perfil")
@@ -268,16 +269,20 @@ class SistemaGestion:
             nombre = input("Nombre completo: ").strip()
             nombre_usuario = input("Nombre de usuario: ").strip()
             email = input("Email: ").strip()
-            contrasena = getpass.getpass("Contrasena: ")
             telefono = input("Telefono (opcional): ").strip() or None
+            contrasena = getpass.getpass("Contrasena: ")
+            edad = input("Edad: ").strip()
+            saldo_inicial = input("Saldo inicial: ").strip()
             es_admin = input("¿Es administrador? (s/n): ").strip().lower() == "s"
 
             usuario = self.usuario_crud.crear_usuario(
                 nombre=nombre,
                 nombre_usuario=nombre_usuario,
                 email=email,
-                contrasena=contrasena,
                 telefono=telefono,
+                contrasena=contrasena,
+                edad=edad,
+                saldo_inicial=saldo_inicial,
                 es_admin=es_admin,
             )
 
@@ -321,6 +326,8 @@ class SistemaGestion:
                 print(f"   Nombre de usuario: {usuario.nombre_usuario}")
                 print(f"   Email: {usuario.email}")
                 print(f"   Telefono: {usuario.telefono or 'No especificado'}")
+                print(f"   Edad: {usuario.edad}")
+                print(f"   Saldo: {usuario.saldo_inicial}")
                 print(f"   Estado: {activo_text}{admin_text}")
             else:
                 print("ERROR: Usuario no encontrado.")
@@ -344,6 +351,8 @@ class SistemaGestion:
                 print(f"   Nombre de usuario: {usuario.nombre_usuario}")
                 print(f"   Email: {usuario.email}")
                 print(f"   Telefono: {usuario.telefono or 'No especificado'}")
+                print(f"   Edad: {usuario.edad}")
+                print(f"   Saldo: {usuario.saldo_inicial}")
                 print(f"   Estado: {activo_text}{admin_text}")
             else:
                 print("ERROR: Usuario no encontrado.")
@@ -372,7 +381,10 @@ class SistemaGestion:
             nuevo_telefono = input(
                 f"Telefono actual ({usuario.telefono or 'No especificado'}): "
             ).strip()
-
+            nuevo_edad = input(f"Edad actual ({usuario.edad}): ").strip()
+            nuevo_saldo_inicial = input(
+                f"Saldo inicial actual ({usuario.saldo_inicial}): "
+            ).strip()
             cambios = {}
             if nuevo_nombre:
                 cambios["nombre"] = nuevo_nombre
@@ -382,7 +394,10 @@ class SistemaGestion:
                 cambios["email"] = nuevo_email
             if nuevo_telefono:
                 cambios["telefono"] = nuevo_telefono
-
+            if nuevo_edad:
+                cambios["edad"] = nuevo_edad
+            if nuevo_saldo_inicial:
+                cambios["saldo_inicial"] = nuevo_saldo_inicial
             if cambios:
                 usuario_actualizado = self.usuario_crud.actualizar_usuario(
                     usuario.id, **cambios
@@ -450,7 +465,7 @@ class SistemaGestion:
     def ejecutar(self) -> None:
         """Ejecutar el sistema principal con autenticacion"""
         try:
-            print("Iniciando Sistema de Gestion de Productos...")
+            print("Iniciando Sistema de Gestion de partidas...")
             print("Configurando base de datos...")
             create_tables()
             print("Sistema listo para usar.")
@@ -468,9 +483,9 @@ class SistemaGestion:
                 if opcion == "1":
                     self.mostrar_menu_usuarios()
                 elif opcion == "2":
-                    self.mostrar_menu_categorias()
+                    self.mostrar_menu_Boletos()
                 elif opcion == "3":
-                    self.mostrar_menu_productos()
+                    self.mostrar_menu_partidas()
                 elif opcion == "4":
                     self.mostrar_menu_consultas()
                 elif opcion == "5":
@@ -490,22 +505,439 @@ class SistemaGestion:
         finally:
             self.db.close()
 
-    # Metodos de categorias, productos y consultas (simplificados para el ejemplo)
-    def mostrar_menu_categorias(self) -> None:
-        print("\n--- GESTION DE CATEGORIAS ---")
-        print("Funcionalidad de categorias (implementar segun necesidad)")
+    # Metodos de Boletos, partidas y consultas
+    def mostrar_menu_Boletos(self) -> None:
+        while True:
+            print("\n" + "-" * 30)
+            print("   GESTIÓN DE BOLETOS")
+            print("-" * 30)
+            print("1. Crear Boleto")
+            print("2. Listar Boletos")
+            print("3. Buscar Boleto por ID")
+            print("4. Actualizar Boleto")
+            print("5. Eliminar Boleto")
+            print("0. Volver al menú principal")
 
-    def mostrar_menu_productos(self) -> None:
-        print("\n--- GESTION DE PRODUCTOS ---")
-        print("Funcionalidad de productos (implementar segun necesidad)")
+            opcion = input("\nSeleccione una opción: ").strip()
+
+            if opcion == "1":
+                self.crear_boleto()
+            elif opcion == "2":
+                self.listar_boletos()
+            elif opcion == "3":
+                self.buscar_boleto_por_id()
+            elif opcion == "4":
+                self.actualizar_boleto()
+            elif opcion == "5":
+                self.eliminar_boleto()
+            elif opcion == "0":
+                break
+            else:
+                print("ERROR: Opción inválida. Intente nuevamente.")
+
+    def crear_boleto(self) -> None:
+        """Crear un nuevo boleto"""
+        with SessionLocal() as db:
+            try:
+                usuario_id = input("Ingrese el ID del usuario: ").strip()
+                juego_id = input("Ingrese el ID del juego: ").strip()
+                numeros = input("Ingrese los números separados por comas: ").strip()
+                costo = float(input("Ingrese el costo del boleto: ").strip())
+                creado_por = input("Ingrese su nombre: ").strip()
+
+                boleto = BoletoCRUD.crear_boleto(
+                    db=db,
+                    usuario_id=usuario_id,
+                    juego_id=juego_id,
+                    numeros=numeros,
+                    costo=costo,
+                    creado_por=creado_por,
+                )
+                print(f"Boleto creado correctamente con ID: {boleto.id}")
+            except Exception as e:
+                print(f"ERROR al crear boleto: {e}")
+
+    def listar_boletos(self) -> None:
+        """Listar todos los boletos"""
+        with SessionLocal() as db:
+            boletos = BoletoCRUD.obtener_todos(db)
+            if not boletos:
+                print("No hay boletos registrados.")
+                return
+            for boleto in boletos:
+                print(
+                    f"ID: {boleto.id} | Usuario: {boleto.usuario_id} | "
+                    f"Juego: {boleto.juego_id} | Numeros: {boleto.numeros} | "
+                    f"Costo: {boleto.costo} | Creado por: {boleto.creado_por}"
+                )
+
+    def buscar_boleto_por_id(self) -> None:
+        """Buscar un boleto por su ID"""
+        with SessionLocal() as db:
+            boleto_id = input("Ingrese el ID del boleto: ").strip()
+            boleto = BoletoCRUD.obtener_por_id(db, boleto_id)
+            if boleto:
+                print(
+                    f"\nID: {boleto.id}\nUsuario: {boleto.usuario_id}\n"
+                    f"Juego: {boleto.juego_id}\nNúmeros: {boleto.numeros}\n"
+                    f"Costo: {boleto.costo}\nCreado por: {boleto.creado_por}"
+                )
+            else:
+                print("No se encontró un boleto con ese ID.")
+
+    def actualizar_boleto(self) -> None:
+        """Actualizar un boleto existente"""
+        with SessionLocal() as db:
+            boleto_id = input("Ingrese el ID del boleto a actualizar: ").strip()
+            nuevos_numeros = input(
+                "Ingrese los nuevos números (dejar vacío para no cambiar): "
+            ).strip()
+            actualizado_por = input("Ingrese su nombre: ").strip()
+
+            boleto = BoletoCRUD.actualizar_boleto(
+                db=db,
+                boleto_id=boleto_id,
+                numeros=nuevos_numeros if nuevos_numeros else None,
+                actualizado_por=actualizado_por if actualizado_por else None,
+            )
+            if boleto:
+                print("Boleto actualizado correctamente.")
+            else:
+                print("No se encontró un boleto con ese ID.")
+
+    def eliminar_boleto(self) -> None:
+        """Eliminar un boleto por su ID"""
+        with SessionLocal() as db:
+            boleto_id = input("Ingrese el ID del boleto a eliminar: ").strip()
+            exito = BoletoCRUD.eliminar_boleto(db, boleto_id)
+            if exito:
+                print("Boleto eliminado correctamente.")
+            else:
+                print("No se encontró un boleto con ese ID.")
+
+    def mostrar_menu_partidas(self) -> None:
+        while True:
+            print("\n" + "-" * 30)
+            print("   GESTIÓN DE PARTIDAS")
+            print("-" * 30)
+            print("1. Crear Partida")
+            print("2. Listar Partidas")
+            print("3. Buscar Partida por ID")
+            print("4. Actualizar Partida")
+            print("5. Eliminar Partida")
+            print("0. Volver al menú principal")
+
+            opcion = input("\nSeleccione una opción: ").strip()
+
+            if opcion == "1":
+                self.crear_partida()
+            elif opcion == "2":
+                self.listar_partidas()
+            elif opcion == "3":
+                self.buscar_partida_por_id()
+            elif opcion == "4":
+                self.actualizar_partida()
+            elif opcion == "5":
+                self.eliminar_partida()
+            elif opcion == "0":
+                break
+            else:
+                print("ERROR: Opción inválida. Intente nuevamente.")
+
+    def crear_partida(self) -> None:
+        """Crear una nueva partida"""
+        with self.SessionLocal() as db:
+            try:
+                usuario_id = input("Ingrese el ID del usuario: ").strip()
+                juego_id = input("Ingrese el ID del juego: ").strip()
+                costo_apuesta = float(input("Ingrese el costo de la apuesta: ").strip())
+                estado = input("Ingrese el estado de la partida: ").strip()
+                premio_id = (
+                    input("Ingrese el ID del premio (opcional): ").strip() or None
+                )
+
+                partida = PartidaCRUD.crear_partida(
+                    db=db,
+                    usuario_id=usuario_id,
+                    juego_id=juego_id,
+                    costo_apuesta=costo_apuesta,
+                    estado=estado,
+                    premio_id=premio_id,
+                )
+                print(f"Partida creada con éxito: {partida}")
+            except Exception as e:
+                print(f"ERROR al crear la partida: {e}")
+
+    def listar_partidas(self) -> None:
+        """Listar todas las partidas"""
+        with self.SessionLocal() as db:
+            partidas = PartidaCRUD.obtener_todas(db)
+            if not partidas:
+                print("No hay partidas registradas.")
+                return
+            for partida in partidas:
+                print(
+                    f"ID: {partida.id}, Usuario: {partida.usuario_id}, Juego: {partida.juego_id}, "
+                    f"Apuesta: {partida.costo_apuesta}, Estado: {partida.estado}, Premio: {partida.premio_id}"
+                )
+
+    def buscar_partida_por_id(self) -> None:
+        """Buscar una partida por su ID"""
+        with self.SessionLocal() as db:
+            partida_id = input("Ingrese el ID de la partida: ").strip()
+            partida = PartidaCRUD.obtener_por_id(db, partida_id)
+            if partida:
+                print(
+                    f"ID: {partida.id}, Usuario: {partida.usuario_id}, Juego: {partida.juego_id}, "
+                    f"Apuesta: {partida.costo_apuesta}, Estado: {partida.estado}, Premio: {partida.premio_id}"
+                )
+            else:
+                print("Partida no encontrada.")
+
+    def actualizar_partida(self) -> None:
+        """Actualizar una partida"""
+        with self.SessionLocal() as db:
+            partida_id = input("Ingrese el ID de la partida: ").strip()
+            estado = (
+                input("Ingrese el nuevo estado (dejar vacío para no cambiar): ").strip()
+                or None
+            )
+            premio_id = (
+                input(
+                    "Ingrese el nuevo ID de premio (dejar vacío para no cambiar): "
+                ).strip()
+                or None
+            )
+
+            partida = PartidaCRUD.actualizar_partida(
+                db=db, partida_id=partida_id, estado=estado, premio_id=premio_id
+            )
+            if partida:
+                print(f"Partida actualizada con éxito: {partida}")
+            else:
+                print("No se encontró la partida.")
+
+    def eliminar_partida(self) -> None:
+        """Eliminar una partida"""
+        with self.SessionLocal() as db:
+            partida_id = input("Ingrese el ID de la partida: ").strip()
+            eliminado = PartidaCRUD.eliminar_partida(db, partida_id)
+            if eliminado:
+                print("Partida eliminada con éxito.")
+            else:
+                print("No se encontró la partida.")
 
     def mostrar_menu_consultas(self) -> None:
-        print("\n--- CONSULTAS Y REPORTES ---")
-        print("Funcionalidad de consultas (implementar segun necesidad)")
+        """Mostrar menú de Consultas y Reportes"""
+        while True:
+            print("\n" + "-" * 30)
+            print("   CONSULTAS Y REPORTES")
+            print("-" * 30)
+            print("1. Consultar Boletos de un Usuario")
+            print("2. Consultar Partidas de un Usuario")
+            print("3. Consultar Ganancias de un Juego")
+            print("4. Consultar Premios Entregados")
+            print("5. Consultar Resumen de un Usuario")
+            print("0. Volver al menú principal")
+
+            opcion = input("\nSeleccione una opción: ").strip()
+
+            if opcion == "1":
+                self.consultar_boletos_usuario()
+            elif opcion == "2":
+                self.consultar_partidas_usuario()
+            elif opcion == "3":
+                self.consultar_ganancias_juego()
+            elif opcion == "4":
+                self.consultar_premios_entregados()
+            elif opcion == "5":
+                self.consultar_resumen_usuario()
+            elif opcion == "0":
+                break
+            else:
+                print("ERROR: Opción inválida. Intente nuevamente.")
+
+    def consultar_boletos_usuario(self) -> None:
+        """Consultar todos los boletos de un usuario"""
+        with self.SessionLocal() as db:
+            usuario_id = input("Ingrese el ID del usuario: ").strip()
+            boletos = db.query(Boleto).filter(Boleto.usuario_id == usuario_id).all()
+            if not boletos:
+                print("El usuario no tiene boletos registrados.")
+                return
+            for boleto in boletos:
+                print(
+                    f"ID: {boleto.id}, Juego: {boleto.juego_id}, Números: {boleto.numeros}, "
+                    f"Costo: {boleto.costo}, Fecha: {boleto.fecha_creacion}"
+                )
+
+    def consultar_partidas_usuario(self) -> None:
+        """Consultar todas las partidas de un usuario"""
+        with self.SessionLocal() as db:
+            usuario_id = input("Ingrese el ID del usuario: ").strip()
+            partidas = db.query(Partida).filter(Partida.usuario_id == usuario_id).all()
+            if not partidas:
+                print("El usuario no tiene partidas registradas.")
+                return
+            for partida in partidas:
+                print(
+                    f"ID: {partida.id}, Juego: {partida.juego_id}, Apuesta: {partida.costo_apuesta}, "
+                    f"Estado: {partida.estado}, Premio: {partida.premio_id}, Fecha: {partida.fecha}"
+                )
+
+    def consultar_ganancias_juego(self) -> None:
+        """Consultar ganancias totales de un juego"""
+        with self.SessionLocal() as db:
+            juego_id = input("Ingrese el ID del juego: ").strip()
+            partidas = db.query(Partida).filter(Partida.juego_id == juego_id).all()
+            if not partidas:
+                print("No hay partidas registradas para este juego.")
+                return
+
+            total_apuestas = sum(p.costo_apuesta for p in partidas)
+            print(f"El juego {juego_id} ha recaudado en apuestas: {total_apuestas}")
+
+    def consultar_premios_entregados(self) -> None:
+        """Consultar todos los premios entregados"""
+        with self.SessionLocal() as db:
+            partidas_con_premio = (
+                db.query(Partida).filter(Partida.premio_id.isnot(None)).all()
+            )
+            if not partidas_con_premio:
+                print("No se han entregado premios.")
+                return
+            for partida in partidas_con_premio:
+                print(
+                    f"Partida ID: {partida.id}, Usuario: {partida.usuario_id}, Juego: {partida.juego_id}, "
+                    f"Premio ID: {partida.premio_id}, Fecha: {partida.fecha}"
+                )
+
+    def consultar_resumen_usuario(self) -> None:
+        """Consultar resumen general de un usuario (boletos, partidas, premios)"""
+        with self.SessionLocal() as db:
+            usuario_id = input("Ingrese el ID del usuario: ").strip()
+
+            boletos = db.query(Boleto).filter(Boleto.usuario_id == usuario_id).count()
+            partidas = (
+                db.query(Partida).filter(Partida.usuario_id == usuario_id).count()
+            )
+            premios = (
+                db.query(Partida)
+                .filter(Partida.usuario_id == usuario_id, Partida.premio_id.isnot(None))
+                .count()
+            )
+
+            print(
+                f"Resumen del Usuario {usuario_id}:\n"
+                f"- Boletos comprados: {boletos}\n"
+                f"- Partidas jugadas: {partidas}\n"
+                f"- Premios ganados: {premios}"
+            )
 
     def configurar_sistema(self) -> None:
-        print("\n--- CONFIGURACION DEL SISTEMA ---")
-        print("Funcionalidad de configuracion (implementar segun necesidad)")
+        while True:
+            print("\n" + "-" * 30)
+            print(" CONFIGURACIÓN DEL SISTEMA")
+            print("-" * 30)
+            print("1. Activar Usuario")
+            print("2. Desactivar Usuario")
+            print("3. Cambiar Rol de Usuario (Admin/Normal)")
+            print("4. Actualizar Costo Base de un Juego")
+            print("5. Actualizar Nombre/Descripción de un Juego")
+            print("0. Volver al menú principal")
+
+            opcion = input("\nSeleccione una opción: ").strip()
+
+            if opcion == "1":
+                self.activar_usuario()
+            elif opcion == "2":
+                self.desactivar_usuario()
+            elif opcion == "3":
+                self.cambiar_rol_usuario()
+            elif opcion == "4":
+                self.actualizar_costo_juego()
+            elif opcion == "5":
+                self.actualizar_nombre_juego()
+            elif opcion == "0":
+                break
+            else:
+                print("ERROR: Opción inválida. Intente nuevamente.")
+
+    def activar_usuario(self) -> None:
+        """Activar un usuario"""
+        with self.SessionLocal() as db:
+            usuario_id = input("Ingrese el ID del usuario a activar: ").strip()
+            usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+            if not usuario:
+                print("Usuario no encontrado.")
+                return
+            usuario.activo = True
+            db.commit()
+            print(f"Usuario {usuario.nombre} activado correctamente.")
+
+    def desactivar_usuario(self) -> None:
+        """Desactivar un usuario"""
+        with self.SessionLocal() as db:
+            usuario_id = input("Ingrese el ID del usuario a desactivar: ").strip()
+            usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+            if not usuario:
+                print("Usuario no encontrado.")
+                return
+            usuario.activo = False
+            db.commit()
+            print(f"Usuario {usuario.nombre} desactivado correctamente.")
+
+    def cambiar_rol_usuario(self) -> None:
+        """Convertir un usuario en administrador o normal"""
+        with self.SessionLocal() as db:
+            usuario_id = input("Ingrese el ID del usuario: ").strip()
+            usuario = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+            if not usuario:
+                print("Usuario no encontrado.")
+                return
+            usuario.es_admin = not usuario.es_admin
+            db.commit()
+            print(
+                f"Usuario {usuario.nombre} ahora es {'Administrador' if usuario.es_admin else 'Usuario normal'}."
+            )
+
+    def actualizar_costo_juego(self) -> None:
+        """Actualizar el costo base de un juego"""
+        with self.SessionLocal() as db:
+            juego_id = input("Ingrese el ID del juego: ").strip()
+            nuevo_costo = float(input("Ingrese el nuevo costo base: ").strip())
+            juego = db.query(Juego).filter(Juego.id == juego_id).first()
+            if not juego:
+                print("Juego no encontrado.")
+                return
+            juego.costo_base = nuevo_costo
+            db.commit()
+            print(f"Costo base del juego {juego.nombre} actualizado a {nuevo_costo}.")
+
+    def actualizar_nombre_juego(self) -> None:
+        """Actualizar nombre o descripción de un juego"""
+        with self.SessionLocal() as db:
+            juego_id = input("Ingrese el ID del juego: ").strip()
+            nuevo_nombre = input(
+                "Ingrese el nuevo nombre del juego (dejar vacío si no desea cambiar): "
+            ).strip()
+            nueva_desc = input(
+                "Ingrese la nueva descripción (dejar vacío si no desea cambiar): "
+            ).strip()
+
+            juego = db.query(Juego).filter(Juego.id == juego_id).first()
+            if not juego:
+                print("Juego no encontrado.")
+                return
+            if nuevo_nombre:
+                juego.nombre = nuevo_nombre
+            if nueva_desc:
+                juego.descripcion = nueva_desc
+
+            db.commit()
+            print(
+                f"Juego actualizado: {juego.nombre} - {juego.descripcion or 'Sin descripción'}"
+            )
 
 
 def main():
