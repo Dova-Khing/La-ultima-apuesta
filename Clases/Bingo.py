@@ -27,7 +27,7 @@ class Bingo:
         print("-----------------------\n")
 
     def jugar(self) -> None:
-        # Cobrar boleto
+
         resultado = self.usuario.comprar_boleto(self.costo_boleto)
         if "Fondos insuficientes" in resultado:
             print(resultado)
@@ -53,7 +53,6 @@ class Bingo:
                 print(self.usuario.mostrar_saldo())
                 return
 
-        # Si se acaban los sorteos y no completó el cartón
         if not self.juego_terminado:
             print("\n Se acabaron los intentos y no lograste completar el cartón.")
 
