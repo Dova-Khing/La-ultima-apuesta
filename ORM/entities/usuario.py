@@ -45,7 +45,7 @@ class Usuario(Base):
     nombre_usuario: str = Column(String(50), unique=True, index=True, nullable=False)
     email: str = Column(String(150), unique=True, index=True, nullable=False)
     telefono: Optional[str] = Column(String(20), nullable=True)
-    contraseña_hash: str = Column(String(255), nullable=False)
+    contrasena_hash: str = Column(String(255), nullable=False)
     edad: str = Column(String(3), nullable=False)
     saldo_inicial: int = Column(Integer, nullable=False, default=0)
     activo: bool = Column(Boolean, default=True)
@@ -56,15 +56,14 @@ class Usuario(Base):
         DateTime, default=datetime.now, onupdate=datetime.now
     )
 
-    # Relaciones
-    bingos = relationship(
-        "Bingo", back_populates="usuario", cascade="all, delete-orphan"
+    partidas = relationship(
+        "Partida", back_populates="usuario", cascade="all, delete-orphan"
     )
-    loterias = relationship(
-        "Loteria", back_populates="usuario", cascade="all, delete-orphan"
+    boletos = relationship(
+        "Boleto", back_populates="usuario", cascade="all, delete-orphan"
     )
-    ruletas = relationship(
-        "Ruleta", back_populates="usuario", cascade="all, delete-orphan"
+    historial_saldo = relationship(
+        "HistorialSaldo", back_populates="usuario", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:
@@ -156,7 +155,7 @@ class UsuarioUpdate(BaseModel):
     telefono: Optional[str] = Field(None, max_length=20)
     activo: Optional[bool] = None
     es_admin: Optional[bool] = None
-    contraseña: Optional[str] = Field(None, min_length=6)
+    contrasena: Optional[str] = Field(None, min_length=6)
 
     @validator("nombre")
     def validar_nombre(cls, v) -> str:
