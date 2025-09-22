@@ -6,15 +6,15 @@ Incluye sistema de autenticacion con login
 import getpass
 from typing import Optional
 
-from auth.security import PasswordManager
-from crud.Boleto_crud import BoletoCRUD
-from crud.partida_crud import PartidaCRUD
-from crud.usuario_crud import UsuarioCRUD
-from database.config import SessionLocal, create_tables
-from entities.Boleto import Boleto
-from entities.partida import Partida
-from entities.usuario import Usuario
-from entities.juego import Juego
+from ORM.auth.security import PasswordManager
+from ORM.crud.Boleto_crud import BoletoCRUD
+from ORM.crud.partida_crud import PartidaCRUD
+from ORM.crud.usuario_crud import UsuarioCRUD
+from ORM.database.config import SessionLocal
+from ORM.entities.Boleto import Boleto
+from ORM.entities.partida import Partida
+from ORM.entities.usuario import Usuario
+from ORM.entities.juego import Juego
 
 
 class SistemaGestion:
@@ -39,7 +39,7 @@ class SistemaGestion:
     def mostrar_pantalla_login(self) -> bool:
         """Mostrar pantalla de login y autenticar usuario"""
         print("\n" + "=" * 50)
-        print("        SISTEMA DE GESTION DE partidaS")
+        print("        SISTEMA DE GESTION DE PARTIDAS")
         print("=" * 50)
         print("INICIAR SESION")
         print("=" * 50)
@@ -467,15 +467,12 @@ class SistemaGestion:
         try:
             print("Iniciando Sistema de Gestion de partidas...")
             print("Configurando base de datos...")
-            create_tables()
             print("Sistema listo para usar.")
 
-            # Autenticacion requerida
             if not self.mostrar_pantalla_login():
                 print("Acceso denegado. Hasta luego!")
                 return
 
-            # Menu principal autenticado
             while True:
                 self.mostrar_menu_principal_autenticado()
                 opcion = input("\nSeleccione una opcion: ").strip()
@@ -505,7 +502,6 @@ class SistemaGestion:
         finally:
             self.db.close()
 
-    # Metodos de Boletos, partidas y consultas
     def mostrar_menu_Boletos(self) -> None:
         while True:
             print("\n" + "-" * 30)
@@ -545,7 +541,7 @@ class SistemaGestion:
                 costo = float(input("Ingrese el costo del boleto: ").strip())
                 creado_por = input("Ingrese su nombre: ").strip()
 
-                boleto = BoletoCRUD.crear_boleto(
+                boleto = self.Boleto_crud.crear_boleto(
                     db=db,
                     usuario_id=usuario_id,
                     juego_id=juego_id,
@@ -560,7 +556,7 @@ class SistemaGestion:
     def listar_boletos(self) -> None:
         """Listar todos los boletos"""
         with SessionLocal() as db:
-            boletos = BoletoCRUD.obtener_todos(db)
+            boletos = self.Boleto_crud.obtener_todos(db)
             if not boletos:
                 print("No hay boletos registrados.")
                 return
@@ -575,7 +571,7 @@ class SistemaGestion:
         """Buscar un boleto por su ID"""
         with SessionLocal() as db:
             boleto_id = input("Ingrese el ID del boleto: ").strip()
-            boleto = BoletoCRUD.obtener_por_id(db, boleto_id)
+            boleto = self.Boleto_crud.obtener_por_id(db, boleto_id)
             if boleto:
                 print(
                     f"\nID: {boleto.id}\nUsuario: {boleto.usuario_id}\n"
@@ -594,7 +590,7 @@ class SistemaGestion:
             ).strip()
             actualizado_por = input("Ingrese su nombre: ").strip()
 
-            boleto = BoletoCRUD.actualizar_boleto(
+            boleto = self.Boleto_crud.actualizar_boleto(
                 db=db,
                 boleto_id=boleto_id,
                 numeros=nuevos_numeros if nuevos_numeros else None,
@@ -609,7 +605,7 @@ class SistemaGestion:
         """Eliminar un boleto por su ID"""
         with SessionLocal() as db:
             boleto_id = input("Ingrese el ID del boleto a eliminar: ").strip()
-            exito = BoletoCRUD.eliminar_boleto(db, boleto_id)
+            exito = self.Boleto_crud.eliminar_boleto(db, boleto_id)
             if exito:
                 print("Boleto eliminado correctamente.")
             else:
@@ -656,7 +652,7 @@ class SistemaGestion:
                     input("Ingrese el ID del premio (opcional): ").strip() or None
                 )
 
-                partida = PartidaCRUD.crear_partida(
+                partida = self.partida_crud.crear_partida(
                     db=db,
                     usuario_id=usuario_id,
                     juego_id=juego_id,
@@ -671,7 +667,7 @@ class SistemaGestion:
     def listar_partidas(self) -> None:
         """Listar todas las partidas"""
         with self.SessionLocal() as db:
-            partidas = PartidaCRUD.obtener_todas(db)
+            partidas = self.partida_crud.obtener_todas(db)
             if not partidas:
                 print("No hay partidas registradas.")
                 return
@@ -685,7 +681,7 @@ class SistemaGestion:
         """Buscar una partida por su ID"""
         with self.SessionLocal() as db:
             partida_id = input("Ingrese el ID de la partida: ").strip()
-            partida = PartidaCRUD.obtener_por_id(db, partida_id)
+            partida = self.partida_crud.obtener_por_id(db, partida_id)
             if partida:
                 print(
                     f"ID: {partida.id}, Usuario: {partida.usuario_id}, Juego: {partida.juego_id}, "
@@ -709,7 +705,7 @@ class SistemaGestion:
                 or None
             )
 
-            partida = PartidaCRUD.actualizar_partida(
+            partida = self.partida_crud.actualizar_partida(
                 db=db, partida_id=partida_id, estado=estado, premio_id=premio_id
             )
             if partida:
@@ -721,7 +717,7 @@ class SistemaGestion:
         """Eliminar una partida"""
         with self.SessionLocal() as db:
             partida_id = input("Ingrese el ID de la partida: ").strip()
-            eliminado = PartidaCRUD.eliminar_partida(db, partida_id)
+            eliminado = self.partida_crud.eliminar_partida(db, partida_id)
             if eliminado:
                 print("Partida eliminada con éxito.")
             else:

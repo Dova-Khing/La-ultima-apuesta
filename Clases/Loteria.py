@@ -4,18 +4,41 @@ from Clases.Usuario import Usuario
 
 
 class Loteria:
+    """
+    Clase que simula un juego de lotería.
 
-    # Se crean los constructores
+    El jugador compra un boleto con un número aleatorio
+    y compite contra un número ganador generado por el sistema.
+    Si ambos coinciden, gana el premio definido.
+    """
+
     def __init__(self, usuario: Usuario, costo_boleto=5, premio=200) -> None:
+        """
+        Inicializa una instancia de Loteria.
+
+        Args:
+            usuario (Usuario): Jugador que participa en la lotería.
+            costo_boleto (int, opcional): Valor del boleto. Por defecto 5.
+            premio (int, opcional): Premio por ganar. Por defecto 200.
+        """
         self.usuario = usuario
         self.costo_boleto = costo_boleto
         self.premio = premio
 
     def jugar(self) -> None:
-        # Cobrar boleto
+        """
+        Ejecuta una ronda de lotería.
+
+        Flujo del juego:
+            1. El usuario compra un boleto (si tiene saldo suficiente).
+            2. Se genera un número aleatorio para el usuario.
+            3. Se genera un número aleatorio ganador.
+            4. Si los números coinciden, el usuario recibe el premio.
+            5. Si no, se notifica que perdió.
+        """
         resultado = self.usuario.comprar_boleto(self.costo_boleto)
         if "Fondos insuficientes" in resultado:
-            print(resultado)  # Imprime el resultado
+            print(resultado)
             return
 
         print(f"\n {self.usuario.nombre} está jugando la Lotería.")

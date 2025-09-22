@@ -1,8 +1,8 @@
 """migracion_inicial
 
-Revision ID: d01d2d439edb
+Revision ID: 20be46c13fbe
 Revises: 
-Create Date: 2025-09-19 15:17:08.210413
+Create Date: 2025-09-21 20:17:18.550286
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd01d2d439edb'
+revision: str = '20be46c13fbe'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -35,12 +35,20 @@ def upgrade() -> None:
     op.create_table('usuarios',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('nombre', sa.String(length=100), nullable=False),
+    sa.Column('nombre_usuario', sa.String(length=50), nullable=False),
+    sa.Column('email', sa.String(length=150), nullable=False),
+    sa.Column('telefono', sa.String(length=20), nullable=True),
+    sa.Column('contrasena_hash', sa.String(length=255), nullable=False),
     sa.Column('edad', sa.String(length=3), nullable=False),
     sa.Column('saldo_inicial', sa.Integer(), nullable=False),
+    sa.Column('activo', sa.Boolean(), nullable=True),
+    sa.Column('es_admin', sa.Boolean(), nullable=True),
     sa.Column('fecha_registro', sa.DateTime(), nullable=False),
     sa.Column('fecha_actualizacion', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_usuarios_email'), 'usuarios', ['email'], unique=True)
+    op.create_index(op.f('ix_usuarios_nombre_usuario'), 'usuarios', ['nombre_usuario'], unique=True)
     op.create_table('boletos',
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('usuario_id', sa.UUID(), nullable=False),
@@ -99,6 +107,8 @@ def downgrade() -> None:
     op.drop_table('premios')
     op.drop_table('historial_saldo')
     op.drop_table('boletos')
+    op.drop_index(op.f('ix_usuarios_nombre_usuario'), table_name='usuarios')
+    op.drop_index(op.f('ix_usuarios_email'), table_name='usuarios')
     op.drop_table('usuarios')
     op.drop_table('juegos')
     # ### end Alembic commands ###

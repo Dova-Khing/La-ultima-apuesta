@@ -1,12 +1,10 @@
 """
-Módulo de configuración de base de datos
-========================================
+Módulo de inicialización de base de datos
+=========================================
 
-Este módulo contiene la configuración y conexión a la base de datos
-usando SQLAlchemy.
+Expone las funciones y objetos principales desde config.py
 """
 
-from .database import get_engine, get_session, create_tables
-from .config import DATABASE_URL
+from .config import engine, SessionLocal, get_db, DATABASE_URL
 
-__all__ = ["get_engine", "get_session", "create_tables", "DATABASE_URL"]
+__all__ = ["engine", "SessionLocal", "get_db", "DATABASE_URL"]

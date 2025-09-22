@@ -43,7 +43,6 @@ class Partida(Base):
 
     usuario = relationship("Usuario", back_populates="partidas")
     juego = relationship("Juego", back_populates="partidas")
-    premio = relationship("Premio", back_populates="partidas")
 
     def __repr__(self) -> str:
         return (
