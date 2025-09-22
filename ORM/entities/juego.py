@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Optional, List, Dict, Any
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 
 from .base import Base
@@ -44,6 +45,13 @@ class Juego(Base):
     )
     creado_por: str = Column(String(100), nullable=False)
     actualizado_por: Optional[str] = Column(String(100), nullable=True)
+
+    partidas = relationship(
+        "Partida", back_populates="juego", cascade="all, delete-orphan"
+    )
+    boletos = relationship(
+        "Boleto", back_populates="juego", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return (
