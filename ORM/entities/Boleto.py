@@ -31,7 +31,7 @@ class Boleto(Base):
     numeros: str = Column(String(255), nullable=False)  # Ejemplo: "5,10,23,45"
     costo: float = Column(Float, nullable=False)
 
-    fecha_creacion: datetime = Column(DateTime, default=datetime.now, nullable=False)
+    fecha_registro: datetime = Column(DateTime, default=datetime.now, nullable=False)
     fecha_actualizacion: datetime = Column(
         DateTime, default=datetime.now, onupdate=datetime.now
     )
@@ -44,7 +44,7 @@ class Boleto(Base):
     def __repr__(self) -> str:
         return (
             f"<Boleto(id={self.id}, usuario_id={self.usuario_id}, juego_id={self.juego_id}, "
-            f"costo={self.costo}, fecha_creacion={self.fecha_creacion})>"
+            f"costo={self.costo}, fecha_registro={self.fecha_registro})>"
         )
 
     def to_dict(self) -> Dict[str, Any]:
@@ -55,8 +55,8 @@ class Boleto(Base):
             "juego_id": self.juego_id,
             "numeros": self.numeros,
             "costo": self.costo,
-            "fecha_creacion": (
-                self.fecha_creacion.isoformat() if self.fecha_creacion else None
+            "fecha_registro": (
+                self.fecha_registro.isoformat() if self.fecha_registro else None
             ),
             "fecha_actualizacion": (
                 self.fecha_actualizacion.isoformat()
@@ -104,7 +104,7 @@ class BoletoResponse(BoletoBase):
     """Esquema de respuesta para boleto"""
 
     id: int
-    fecha_creacion: datetime
+    fecha_registro: datetime
     fecha_actualizacion: Optional[datetime]
     creado_por: str
     actualizado_por: Optional[str]

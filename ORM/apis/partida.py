@@ -5,10 +5,10 @@ API de Partidas - Endpoints para gestión de partidas
 from typing import List
 from uuid import UUID
 
-from crud.partida_crud import PartidaCRUD
-from database.config import get_db
+from ORM.crud.partida_crud import PartidaCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import PartidaCreate, PartidaResponse, PartidaUpdate, RespuestaAPI
+from ORM.schemas import PartidaCreate, PartidaResponse, PartidaUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/partidas", tags=["partidas"])
