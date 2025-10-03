@@ -1,7 +1,7 @@
-# Proyecto ORM - Juegos (Bingo, Ruleta y Lotería)
+# Sistema de Gestión de Juegos y Apuestas - API REST
 
-Este proyecto implementa un sistema de juegos de azar (Bingo, Ruleta y Lotería) utilizando **SQLAlchemy** con conexión a **PostgreSQL** (Neon Database).  
-Incluye operaciones CRUD, validaciones con Pydantic y soporte para migraciones con Alembic.
+Este proyecto implementa un sistema de juegos de azar (Bingo, Ruleta y Lotería) utilizando **API REST** con conexión a **PostgreSQL** (Neon Database).  
+Incluye operaciones CRUD y validaciones con Pydantic.
 
 
 ## Recursos Adicionales
@@ -11,119 +11,88 @@ Incluye operaciones CRUD, validaciones con Pydantic y soporte para migraciones c
 - [Alembic Documentation](https://alembic.sqlalchemy.org/)
 - [Neon Documentation](https://neon.tech/docs)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
 
-## Inicio Rápido
+## Instalación
 
-Si quieres empezar inmediatamente:
+Para iniciar el proyecto debes:
 
 1. **Instala las dependencias:**
    ```bash
    pip install -r requirements.txt
    ```
-
-2. **Configura Neon:**
-   - Crea una cuenta en [neon.tech](https://neon.tech)
-   - Crea un nuevo proyecto
-   - Copia la cadena de conexión
-
-3. **Configura las variables de entorno:**
-   ```bash
-   cp env.example .env
-   # Edita .env con tu cadena de conexión de Neon
+2. **Configurar variables de entorno:**
+   Crear un archivo `.env` en la raíz del proyecto:
+   ```env
+   DATABASE_URL=postgresql://usuario:contraseña@host:puerto/database
    ```
 
-4. **Crea las tablas automáticamente:**
-   ```bash
-   alembic revision --autogenerate -m "migracion_inicial"
-   alembic upgrade heads
-   ```
-
-5. **¡Ejecuta el proyecto!**
+3. **Ejecutar el servidor:**
    ```bash
    python ORM/login.py
    ```
 
-¿Necesitas más detalles? Continúa leyendo la guía completa abajo.
+El servidor se ejecutará en `http://localhost:8000`
 
-## Instalación y Configuración
+## Documentación de la API
 
-### 1. Instalar dependencias
+Una vez que el servidor esté ejecutándose, puedes acceder a:
 
-```bash
-pip install -r requirements.txt
-```
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
 
-### 2. Configurar Neon Database
+## Endpoints Principales
 
-#### Paso 1: Crear cuenta en Neon
-1. Ve a [neon.tech](https://neon.tech) y crea una cuenta gratuita
-2. Inicia sesión en tu dashboard de Neon
+### Autenticación (`/auth`)
+- `POST /auth/login` - Iniciar sesión
+- `POST /auth/crear-admin` - Crear usuario administrador
+- `GET /auth/verificar/{usuario_id}` - Verificar usuario
+- `GET /auth/estado` - Estado del sistema
 
-#### Paso 2: Crear una nueva base de datos
-1. En el dashboard, haz clic en "Create Project"
-2. Elige un nombre para tu proyecto (ej: `mi-proyecto-orm`)
-3. Selecciona la región más cercana a tu ubicación
-4. Haz clic en "Create Project"
+### Usuarios (`/usuarios`)
+- `GET /usuarios/` - Listar usuarios
+- `GET /usuarios/{usuario_id}` - Obtener usuario por ID
+- `GET /usuarios/email/{email}` - Obtener usuario por email
+- `GET /usuarios/username/{nombre_usuario}` - Obtener usuario por nombre de usuario
+- `POST /usuarios/` - Crear usuario
+- `PUT /usuarios/{usuario_id}` - Actualizar usuario
+- `DELETE /usuarios/{usuario_id}` - Eliminar usuario
+- `PATCH /usuarios/{usuario_id}/desactivar` - Desactivar usuario
+- `POST /usuarios/{usuario_id}/cambiar-contraseña` - Cambiar contraseña
+- `GET /usuarios/admin/lista` - Listar administradores
+- `GET /usuarios/{usuario_id}/es-admin` - Verificar si es admin
 
-#### Paso 3: Obtener la cadena de conexión
-1. Una vez creado el proyecto, ve a la sección "Connection Details"
-2. Copia la cadena de conexión que aparece (algo como: `postgresql://usuario:password@host/database?sslmode=require`)
-3. También anota los datos individuales:
-   - **Host**: El host de tu base de datos
-   - **Database**: El nombre de la base de datos
-   - **Username**: Tu nombre de usuario
-   - **Password**: Tu contraseña
-   - **Port**: 5432 (por defecto)
+### Juegos (`/juegos`)
+- `GET /juegos/` - Listar juegos
+- `GET /juegos/{juego_id}` - Obtener juego por ID
+- `POST /juegos/` - Crear un nuevo juego
+- `PUT /juegos/{juego_id}` - Actualizar un juego existente
+- `DELETE /juegos/{juego_id}` - Eliminar un juego
 
-### 3. Configurar variables de entorno
+### Premios (`/premios`)
+- `GET /premios/` - Listar premios
+- `GET /premios/{premio_id}` - Obtener premio por ID
+- `POST /premios/` - Crear un premio
+- `PUT /premios/{premio_id}` - Actualizar un premio
+- `DELETE /premios/{premio_id}` - Eliminar un premio
 
-1. Copia el archivo de ejemplo:
-```bash
-cp env.example .env
-```
+### Partidas (`/partidas`)
+- `GET /partidas/` - Listar partidas
+- `GET /partidas/{partida_id}` - Obtener partida por ID
+- `POST /partidas/` - Crear una partida
+- `PUT /partidas/{partida_id}` - Actualizar una partida
+- `DELETE /partidas/{partida_id}` - Eliminar una partida
 
-2. Edita el archivo `.env` con tus credenciales reales de Neon:
+### Historial de Saldo (`/historial-saldo`)
+- `GET /historial-saldo/` - Listar historial de movimientos
+- `GET /historial-saldo/{historial_id}` - Obtener registro por ID
+- `POST /historial-saldo/` - Crear un registro de movimiento
+- `PUT /historial-saldo/{historial_id}` - Actualizar un registro
+- `DELETE /historial-saldo/{historial_id}` - Eliminar un registro
 
-**Opción A: Usar la cadena de conexión completa (Recomendado)**
-```env
-DATABASE_URL=postgresql://usuario:password@host/database?sslmode=require
-```
-
-**Opción B: Usar variables individuales**
-```env
-DB_HOST=tu-host.neon.tech
-DB_PORT=5432
-DB_NAME=tu-base-de-datos
-DB_USERNAME=tu-usuario
-DB_PASSWORD=tu-password
-```
-
-### 4. Crear las tablas automáticamente
-
-Si prefieres usar migraciones (recomendado para proyectos en producción):
-
-##### Paso 1: Inicializar Alembic (solo la primera vez)
-```bash
-alembic init migrations
-```
-
-##### Paso 2: Configurar alembic.ini
-El archivo `alembic.ini` ya está configurado, pero si necesitas modificarlo, asegúrate de que la línea `sqlalchemy.url` esté comentada o vacía, ya que usaremos las variables de entorno.
-
-##### Paso 3: Crear la primera migración
-```bash
-alembic revision --autogenerate -m "Initial migration"
-```
-
-##### Paso 4: Aplicar las migraciones
-```bash
-alembic upgrade head
-```
-
-### 6. Verificar que todo funciona
-
-Ejecuta el script principal para verificar que todo está funcionando:
-
-```bash
-   python ORM/login.py
-```
+### Boletos (`/boletos`)
+- `GET /boletos/` - Listar boletos
+- `GET /boletos/{boleto_id}` - Obtener boleto por ID
+- `POST /boletos/` - Crear un boleto
+- `PUT /boletos/{boleto_id}` - Actualizar un boleto
+- `DELETE /boletos/{boleto_id}` - Eliminar un boleto
