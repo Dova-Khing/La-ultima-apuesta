@@ -18,7 +18,21 @@ router = APIRouter(prefix="/premios", tags=["premios"])
 async def obtener_premios(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
-    """Obtener todos los premios con paginación."""
+    """
+     Obtener todos los premios con paginación.
+
+    Args:
+        skip (int): Número de registros a omitir (para paginación). Default 0.
+        limit (int): Número máximo de registros a devolver. Default 100.
+        db (Session): Sesión de base de datos proporcionada por `Depends(get_db)`.
+
+    Returns:
+        List[PremioResponse]: Lista de premios almacenados en la base de datos.
+
+    Raises:
+        HTTPException(500): Si ocurre un error interno al obtener los premios.
+    """
+
     try:
         premio_crud = PremioCRUD(db)
         premios = premio_crud.obtener_premios(skip=skip, limit=limit)
@@ -32,7 +46,21 @@ async def obtener_premios(
 
 @router.get("/{premio_id}", response_model=PremioResponse)
 async def obtener_premio(premio_id: UUID, db: Session = Depends(get_db)):
-    """Obtener un premio por ID."""
+    """
+    Obtener un premio por su ID.
+
+    Args:
+        premio_id (UUID): Identificador único del premio.
+        db (Session): Sesión de base de datos.
+
+    Returns:
+        PremioResponse: Datos del premio encontrado.
+
+    Raises:
+        HTTPException(404): Si no se encuentra el premio.
+        HTTPException(500): Si ocurre un error inesperado al consultar.
+
+    """
     try:
         premio_crud = PremioCRUD(db)
         premio = premio_crud.obtener_premio(premio_id)
@@ -52,7 +80,21 @@ async def obtener_premio(premio_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=PremioResponse, status_code=status.HTTP_201_CREATED)
 async def crear_premio(premio_data: PremioCreate, db: Session = Depends(get_db)):
-    """Crear un nuevo premio."""
+    """
+    Crear un nuevo premio.
+
+    Args:
+        premio_data (PremioCreate): Datos requeridos para crear el premio.
+        db (Session): Sesión de base de datos.
+
+    Returns:
+        PremioResponse: Datos del premio creado.
+
+    Raises:
+        HTTPException(400): Si los datos de entrada no son válidos.
+        HTTPException(500): Si ocurre un error interno al crear el premio.
+
+    """
     try:
         premio_crud = PremioCRUD(db)
         premio = premio_crud.crear_premio(
@@ -75,7 +117,23 @@ async def crear_premio(premio_data: PremioCreate, db: Session = Depends(get_db))
 async def actualizar_premio(
     premio_id: UUID, premio_data: PremioUpdate, db: Session = Depends(get_db)
 ):
-    """Actualizar un premio existente."""
+    """
+    Actualizar un premio existente.
+
+    Args:
+        premio_id (UUID): Identificador único del premio a actualizar.
+        premio_data (PremioUpdate): Campos a modificar (solo los no nulos se actualizan).
+        db (Session): Sesión de base de datos.
+
+    Returns:
+        PremioResponse: Datos del premio actualizado.
+
+    Raises:
+        HTTPException(404): Si el premio no existe.
+        HTTPException(400): Si los datos proporcionados son inválidos.
+        HTTPException(500): Si ocurre un error interno al actualizar el premio.
+
+    """
     try:
         premio_crud = PremioCRUD(db)
         premio_existente = premio_crud.obtener_premio(premio_id)
@@ -107,7 +165,21 @@ async def actualizar_premio(
 
 @router.delete("/{premio_id}", response_model=RespuestaAPI)
 async def eliminar_premio(premio_id: UUID, db: Session = Depends(get_db)):
-    """Eliminar un premio."""
+    """
+    Eliminar un premio por su ID.
+
+    Args:
+        premio_id (UUID): Identificador único del premio a eliminar.
+        db (Session): Sesión de base de datos.
+
+    Returns:
+        RespuestaAPI: Mensaje de confirmación y estado de éxito.
+
+    Raises:
+        HTTPException(404): Si el premio no existe.
+        HTTPException(500): Si ocurre un error interno al eliminar el premio.
+
+    """
     try:
         premio_crud = PremioCRUD(db)
         premio_existente = premio_crud.obtener_premio(premio_id)

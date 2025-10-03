@@ -18,6 +18,23 @@ router = APIRouter(prefix="/boletos", tags=["boletos"])
 async def obtener_boletos(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
+    """
+    Obtener una lista de boletos.
+
+    Args:
+        skip (int, opcional): Número de registros a omitir en la consulta. Por defecto 0.
+        limit (int, opcional): Número máximo de boletos a devolver. Por defecto 100.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+
+    Returns:
+     List[BoletoResponse]: Lista de boletos almacenados en la base de datos.
+
+    Raises:
+     HTTPException(500): Si ocurre un error inesperado al consultar los boletos.
+
+    """
+
     try:
         return BoletoCRUD.obtener_boletos(db, skip=skip, limit=limit)
     except Exception as e:
@@ -28,6 +45,20 @@ async def obtener_boletos(
 
 @router.get("/{boleto_id}", response_model=BoletoResponse)
 async def obtener_boleto(boleto_id: UUID, db: Session = Depends(get_db)):
+    """
+    Obtener un boleto específico por su ID.
+
+    Args:
+        boleto_id (UUID): Identificador único del boleto.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        BoletoResponse: Información del boleto solicitado.
+
+    Raises:
+        HTTPException(404): Si no se encuentra el boleto.
+        HTTPException(500): Si ocurre un error inesperado.
+    """
     try:
         boleto = BoletoCRUD.obtener_boleto(db, boleto_id)
         if not boleto:
@@ -41,6 +72,20 @@ async def obtener_boleto(boleto_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=BoletoResponse, status_code=201)
 async def crear_boleto(boleto_data: BoletoCreate, db: Session = Depends(get_db)):
+    """
+    Crear un nuevo boleto en el sistema.
+
+    Args:
+        boleto_data (BoletoCreate): Datos necesarios para la creación del boleto.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        BoletoResponse: Datos del boleto recién creado.
+
+    Raises:
+        HTTPException(500): Si ocurre un error al crear el boleto.
+    """
+
     try:
         return BoletoCRUD.crear_boleto(db, **boleto_data.dict())
     except Exception as e:
@@ -51,6 +96,22 @@ async def crear_boleto(boleto_data: BoletoCreate, db: Session = Depends(get_db))
 async def actualizar_boleto(
     boleto_id: UUID, boleto_data: BoletoUpdate, db: Session = Depends(get_db)
 ):
+    """
+     Actualizar los datos de un boleto existente.
+
+    Args:
+        boleto_id (UUID): Identificador único del boleto a actualizar.
+        boleto_data (BoletoUpdate): Datos a modificar del boleto.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        BoletoResponse: Información del boleto actualizado.
+
+    Raises:
+        HTTPException(404): Si el boleto no existe.
+        HTTPException(500): Si ocurre un error inesperado al actualizar.
+    """
+
     try:
         boleto = BoletoCRUD.obtener_boleto(db, boleto_id)
         if not boleto:
@@ -66,6 +127,20 @@ async def actualizar_boleto(
 
 @router.delete("/{boleto_id}", response_model=RespuestaAPI)
 async def eliminar_boleto(boleto_id: UUID, db: Session = Depends(get_db)):
+    """
+    Eliminar un boleto por su ID.
+
+    Args:
+        boleto_id (UUID): Identificador único del boleto a eliminar.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        RespuestaAPI: Mensaje de confirmación y estado de la operación.
+
+    Raises:
+        HTTPException(404): Si el boleto no existe.
+        HTTPException(500): Si ocurre un error inesperado al eliminar.
+    """
     try:
         boleto = BoletoCRUD.obtener_boleto(db, boleto_id)
         if not boleto:

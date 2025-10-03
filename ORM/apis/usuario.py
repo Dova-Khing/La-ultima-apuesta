@@ -24,7 +24,18 @@ router = APIRouter(prefix="/usuarios", tags=["usuarios"])
 async def obtener_usuarios(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
-    """Obtener todos los usuarios con paginación."""
+    """
+    Obtener todos los usuarios registrados en el sistema.
+
+    Parámetros:
+        skip (int, opcional): Número de registros a omitir (para paginación). Default = 0.
+        limit (int, opcional): Máximo de usuarios a retornar. Default = 100.
+        db (Session): Sesión de base de datos proporcionada por la dependencia.
+
+    Retorna:
+        List[UsuarioResponse]: Lista de usuarios registrados.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         usuarios = usuario_crud.obtener_usuarios(skip=skip, limit=limit)
@@ -38,7 +49,17 @@ async def obtener_usuarios(
 
 @router.get("/{usuario_id}", response_model=UsuarioResponse)
 async def obtener_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
-    """Obtener un usuario por ID."""
+    """
+    Obtener un usuario por su ID único.
+
+    Parámetros:
+        usuario_id (UUID): Identificador único del usuario.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        UsuarioResponse: Información detallada del usuario.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.obtener_usuario(usuario_id)
@@ -58,7 +79,17 @@ async def obtener_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
 
 @router.get("/email/{email}", response_model=UsuarioResponse)
 async def obtener_usuario_por_email(email: str, db: Session = Depends(get_db)):
-    """Obtener un usuario por email."""
+    """
+     Obtener un usuario a partir de su dirección de correo electrónico.
+
+    Parámetros:
+        email (str): Correo electrónico del usuario a buscar.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        UsuarioResponse: Información del usuario asociado al correo.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.obtener_usuario_por_email(email)
@@ -80,7 +111,17 @@ async def obtener_usuario_por_email(email: str, db: Session = Depends(get_db)):
 async def obtener_usuario_por_nombre_usuario(
     nombre_usuario: str, db: Session = Depends(get_db)
 ):
-    """Obtener un usuario por nombre de usuario."""
+    """
+     Obtener un usuario por su nombre de usuario (username).
+
+    Parámetros:
+        nombre_usuario (str): Nombre de usuario a buscar.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        UsuarioResponse: Información del usuario.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.obtener_usuario_por_nombre_usuario(nombre_usuario)
@@ -100,7 +141,26 @@ async def obtener_usuario_por_nombre_usuario(
 
 @router.post("/", response_model=UsuarioResponse, status_code=status.HTTP_201_CREATED)
 async def crear_usuario(usuario_data: UsuarioCreate, db: Session = Depends(get_db)):
-    """Crear un nuevo usuario."""
+    """
+      Crear un nuevo usuario en el sistema.
+
+    Parámetros (body):
+        usuario_data (UsuarioCreate): Datos necesarios para crear un usuario:
+            - nombre (str)
+            - nombre_usuario (str)
+            - email (str)
+            - contraseña (str)
+            - telefono (str)
+            - edad (int)
+            - saldo_inicial (float)
+            - es_admin (bool)
+
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        UsuarioResponse: Datos del usuario recién creado.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.crear_usuario(
@@ -127,7 +187,17 @@ async def crear_usuario(usuario_data: UsuarioCreate, db: Session = Depends(get_d
 async def actualizar_usuario(
     usuario_id: UUID, usuario_data: UsuarioUpdate, db: Session = Depends(get_db)
 ):
-    """Actualizar un usuario existente."""
+    """
+    Actualizar la información de un usuario existente.
+
+    Parámetros:
+        usuario_id (UUID): Identificador único del usuario a actualizar.
+        usuario_data (UsuarioUpdate): Campos opcionales a modificar.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        UsuarioResponse: Usuario actualizado con los cambios aplicados.
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
 
@@ -163,7 +233,17 @@ async def actualizar_usuario(
 
 @router.delete("/{usuario_id}", response_model=RespuestaAPI)
 async def eliminar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
-    """Eliminar un usuario."""
+    """
+      Eliminar un usuario del sistema.
+
+    Parámetros:
+        usuario_id (UUID): Identificador único del usuario a eliminar.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        RespuestaAPI: Confirmación de eliminación exitosa.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
 
@@ -193,7 +273,17 @@ async def eliminar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
 
 @router.patch("/{usuario_id}/desactivar", response_model=UsuarioResponse)
 async def desactivar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
-    """Desactivar un usuario (soft delete)."""
+    """
+     Desactivar un usuario sin eliminarlo de la base de datos (soft delete).
+
+    Parámetros:
+        usuario_id (UUID): Identificador único del usuario a desactivar.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        UsuarioResponse: Información del usuario desactivado.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.desactivar_usuario(usuario_id)
@@ -215,7 +305,19 @@ async def desactivar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
 async def cambiar_contrasena(
     usuario_id: UUID, cambio_data: CambioContrasena, db: Session = Depends(get_db)
 ):
-    """Cambiar la contraseña de un usuario."""
+    """
+    Cambiar la contraseña de un usuario.
+
+    Parámetros:
+        usuario_id (UUID): Identificador único del usuario.
+        cambio_data (CambioContraseña): Contiene la contraseña actual y la nueva contraseña.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        RespuestaAPI: Confirmación del cambio de contraseña.
+
+    """
+
     try:
         usuario_crud = UsuarioCRUD(db)
 
@@ -250,7 +352,16 @@ async def cambiar_contrasena(
 
 @router.get("/admin/lista", response_model=List[UsuarioResponse])
 async def obtener_usuarios_admin(db: Session = Depends(get_db)):
-    """Obtener todos los usuarios administradores."""
+    """
+    Obtener todos los usuarios con rol de administrador.
+
+    Parámetros:
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        List[UsuarioResponse]: Lista de usuarios administradores.
+
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         admins = usuario_crud.obtener_usuarios_admin()
@@ -264,7 +375,16 @@ async def obtener_usuarios_admin(db: Session = Depends(get_db)):
 
 @router.get("/{usuario_id}/es-admin", response_model=RespuestaAPI)
 async def verificar_es_admin(usuario_id: UUID, db: Session = Depends(get_db)):
-    """Verificar si un usuario es administrador."""
+    """
+    Verificar si un usuario tiene privilegios de administrador.
+
+    Parámetros:
+        usuario_id (UUID): Identificador único del usuario.
+        db (Session): Sesión de base de datos.
+
+    Retorna:
+        RespuestaAPI: Mensaje y flag indicando si el usuario es admin.
+    """
     try:
         usuario_crud = UsuarioCRUD(db)
         es_admin = usuario_crud.es_admin(usuario_id)

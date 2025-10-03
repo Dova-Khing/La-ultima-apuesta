@@ -18,6 +18,22 @@ router = APIRouter(prefix="/partidas", tags=["partidas"])
 async def obtener_partidas(
     skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 ):
+    """
+    Obtener una lista de partidas.
+
+    Args:
+        skip (int, opcional): Número de registros a omitir. Por defecto 0.
+        limit (int, opcional): Número máximo de partidas a devolver. Por defecto 100.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        List[PartidaResponse]: Lista de partidas registradas en el sistema.
+
+    Raises:
+        HTTPException(500): Si ocurre un error inesperado al obtener las partidas.
+
+
+    """
     try:
         return PartidaCRUD.obtener_todas(db, skip=skip, limit=limit)
     except Exception as e:
@@ -28,6 +44,22 @@ async def obtener_partidas(
 
 @router.get("/{partida_id}", response_model=PartidaResponse)
 async def obtener_partida(partida_id: UUID, db: Session = Depends(get_db)):
+    """
+     Obtener una partida específica por su ID.
+
+    Args:
+        partida_id (UUID): Identificador único de la partida.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        PartidaResponse: Información de la partida solicitada.
+
+    Raises:
+        HTTPException(404): Si la partida no se encuentra.
+        HTTPException(500): Si ocurre un error inesperado al consultar.
+
+
+    """
     try:
         partida = PartidaCRUD.obtener_por_id(db, partida_id)
         if not partida:
@@ -41,6 +73,21 @@ async def obtener_partida(partida_id: UUID, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=PartidaResponse, status_code=201)
 async def crear_partida(partida_data: PartidaCreate, db: Session = Depends(get_db)):
+    """
+     Crear una nueva partida en el sistema.
+
+    Args:
+        partida_data (PartidaCreate): Datos necesarios para la creación de la partida.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        PartidaResponse: Información de la partida recién creada.
+
+    Raises:
+        HTTPException(500): Si ocurre un error inesperado al crear la partida.
+
+
+    """
     try:
         return PartidaCRUD.crear_partida(db, **partida_data.dict())
     except Exception as e:
@@ -51,6 +98,23 @@ async def crear_partida(partida_data: PartidaCreate, db: Session = Depends(get_d
 async def actualizar_partida(
     partida_id: UUID, partida_data: PartidaUpdate, db: Session = Depends(get_db)
 ):
+    """
+    Actualizar los datos de una partida existente.
+
+    Args:
+        partida_id (UUID): Identificador único de la partida a actualizar.
+        partida_data (PartidaUpdate): Datos a modificar en la partida.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        PartidaResponse: Información de la partida actualizada.
+
+    Raises:
+        HTTPException(404): Si la partida no existe.
+        HTTPException(500): Si ocurre un error inesperado al actualizar.
+
+
+    """
     try:
         partida = PartidaCRUD.obtener_por_id(db, partida_id)
         if not partida:
@@ -66,6 +130,22 @@ async def actualizar_partida(
 
 @router.delete("/{partida_id}", response_model=RespuestaAPI)
 async def eliminar_partida(partida_id: UUID, db: Session = Depends(get_db)):
+    """
+       Eliminar una partida por su ID.
+
+    Args:
+        partida_id (UUID): Identificador único de la partida a eliminar.
+        db (Session): Sesión de base de datos proporcionada por dependencia.
+
+    Returns:
+        RespuestaAPI: Mensaje de confirmación y estado de la operación.
+
+    Raises:
+        HTTPException(404): Si la partida no se encuentra.
+        HTTPException(500): Si ocurre un error inesperado al eliminar.
+
+
+    """
     try:
         partida = PartidaCRUD.obtener_por_id(db, partida_id)
         if not partida:
