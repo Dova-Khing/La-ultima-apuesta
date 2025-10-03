@@ -5,10 +5,10 @@ API de Juegos - Endpoints para gestión de juegos
 from typing import List
 from uuid import UUID
 
-from crud.juego_crud import JuegoCRUD
-from database.config import get_db
+from ORM.crud.juego_crud import JuegoCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import JuegoCreate, JuegoResponse, JuegoUpdate, RespuestaAPI
+from ORM.schemas import JuegoCreate, JuegoResponse, JuegoUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/juegos", tags=["juegos"])

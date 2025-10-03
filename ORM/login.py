@@ -4,8 +4,7 @@ API REST con FastAPI - Sin interfaz de consola
 """
 
 import uvicorn
-from apis import auth, usuario, premio, partida, juego, boleto, historial_saldo
-from database.config import create_tables
+from ORM.apis import auth, usuario, premio, partida, juego, boleto, historial_saldo
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -25,7 +24,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir los routers de las APIs
+"""
+INCLUIR LOS ROUTERS DE LAS APIS
+
+"""
 app.include_router(auth.router)
 app.include_router(usuario.router)
 app.include_router(premio.router)
@@ -40,7 +42,6 @@ async def startup_event():
     """Evento de inicio de la aplicación"""
     print("Iniciando Sistema de Gestión de Juegos y Apuestas...")
     print("Configurando base de datos...")
-    create_tables()
     print("Sistema listo para usar.")
     print("Documentación disponible en: http://localhost:8000/docs")
 
@@ -69,10 +70,10 @@ def main():
     """Función principal para ejecutar el servidor"""
     print("Iniciando servidor FastAPI...")
     uvicorn.run(
-        "main:app",
+        "ORM.login:app",
         host="0.0.0.0",
         port=8000,
-        reload=True,  # Recargar automáticamente en desarrollo
+        reload=True,
         log_level="info",
     )
 
