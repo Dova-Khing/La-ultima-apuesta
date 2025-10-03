@@ -30,7 +30,7 @@ class Usuario(Base):
         saldo_inicial: Saldo actual
         nombre_usuario: Nombre único para login
         email: Correo electrónico único
-        contraseña_hash: Hash de la contraseña
+        contrasena_hash: Hash de la contraseña
         telefono: Número telefónico
         activo: Estado activo/inactivo
         es_admin: Si el usuario tiene permisos de administrador
@@ -138,7 +138,7 @@ class UsuarioBase(BaseModel):
 class UsuarioCreate(UsuarioBase):
     """Esquema para crear un nuevo usuario"""
 
-    contraseña: str = Field(
+    contrasena: str = Field(
         ..., min_length=6, description="Contraseña en texto plano (será hasheada)"
     )
 

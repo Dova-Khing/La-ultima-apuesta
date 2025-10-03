@@ -26,7 +26,7 @@ class Juego(Base):
         nombre (str): Nombre del juego (ej. "Bingo", "Ruleta", "Lotería")
         descripcion (str): Descripción del juego
         costo_base (float): Costo mínimo para jugar
-        fecha_creacion (datetime): Fecha en la que se creó el juego
+        fecha_registro (datetime): Fecha en la que se creó el juego
         fecha_actualizacion (datetime): Última actualización del juego
         creado_por (str): Usuario/administrador que creó el juego
         actualizado_por (str): Usuario/administrador que actualizó el juego
@@ -39,7 +39,7 @@ class Juego(Base):
     descripcion: Optional[str] = Column(String(255), nullable=True)
     costo_base: float = Column(Float, nullable=False, default=0.0)
 
-    fecha_creacion: datetime = Column(DateTime, default=datetime.now, nullable=False)
+    fecha_registro: datetime = Column(DateTime, default=datetime.now, nullable=False)
     fecha_actualizacion: datetime = Column(
         DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
     )
@@ -66,8 +66,8 @@ class Juego(Base):
             "nombre": self.nombre,
             "descripcion": self.descripcion,
             "costo_base": self.costo_base,
-            "fecha_creacion": (
-                self.fecha_creacion.isoformat() if self.fecha_creacion else None
+            "fecha_registro": (
+                self.fecha_registro.isoformat() if self.fecha_registro else None
             ),
             "fecha_actualizacion": (
                 self.fecha_actualizacion.isoformat()
@@ -158,7 +158,7 @@ class JuegoResponse(JuegoBase):
     """Esquema para respuesta de juego"""
 
     id: int
-    fecha_creacion: datetime
+    fecha_registro: datetime
     fecha_actualizacion: datetime
 
     class Config:

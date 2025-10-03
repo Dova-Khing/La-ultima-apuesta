@@ -26,7 +26,7 @@ class Premio(Base):
         juego_id (int): ID del juego asociado
         descripcion (str): Descripción del premio
         valor (float): Valor económico del premio
-        fecha_creacion (datetime): Fecha de creación
+        fecha_registro (datetime): Fecha de creación
         fecha_actualizacion (datetime): Fecha de última actualización
         creado_por (str): Usuario que creó el premio
         actualizado_por (str): Último usuario que lo modificó
@@ -39,7 +39,7 @@ class Premio(Base):
     descripcion: str = Column(String(255), nullable=False)
     valor: float = Column(Float, nullable=False, default=0.0)
 
-    fecha_creacion: datetime = Column(DateTime, default=datetime.now, nullable=False)
+    fecha_registro: datetime = Column(DateTime, default=datetime.now, nullable=False)
     fecha_actualizacion: datetime = Column(
         DateTime, default=datetime.now, onupdate=datetime.now, nullable=False
     )
@@ -58,8 +58,8 @@ class Premio(Base):
             "juego_id": self.juego_id,
             "descripcion": self.descripcion,
             "valor": self.valor,
-            "fecha_creacion": (
-                self.fecha_creacion.isoformat() if self.fecha_creacion else None
+            "fecha_registro": (
+                self.fecha_registro.isoformat() if self.fecha_registro else None
             ),
             "fecha_actualizacion": (
                 self.fecha_actualizacion.isoformat()
@@ -125,7 +125,7 @@ class PremioResponse(PremioBase):
     """Esquema para respuesta de premio"""
 
     id: int
-    fecha_creacion: datetime
+    fecha_registro: datetime
     fecha_actualizacion: datetime
     creado_por: Optional[str]
     actualizado_por: Optional[str]
