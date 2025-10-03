@@ -1,7 +1,3 @@
-"""
-API de Autenticación - Endpoints para login y autenticación
-"""
-
 from uuid import UUID
 
 from ORM.crud.usuario_crud import UsuarioCRUD
@@ -32,38 +28,32 @@ async def login(login_data: UsuarioLogin, db: Session = Depends(get_db)):
     Errores:
         401 UNAUTHORIZED: Credenciales incorrectas o usuario inactivo.
         500 INTERNAL_SERVER_ERROR: Error en el proceso de autenticación.
-
-
     """
     try:
-        usuario_crud = UsuarioCRUD(db)
-        usuario = usuario_crud.autenticar_usuario(
-            login_data.nombre_usuario, login_data.contrasenna
-        )
-        if not login_data.nombre_usuario or not not login_data.contraseña:
+        if not login_data.nombre_usuario or not login_data.contraseña:
             raise HTTPException(
-           status_code=status.HTTP_400_BAD_REQUEST,
-           detail="El nombre de usuario/email y la contraseña son obligatorios"
-       )
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="El nombre de usuario/email y la contraseña son obligatorios",
+            )
 
-
-        if len(login_data.contraseña)<8:
-            raise HTTPException (
-                status_code=status.HTTP_400_BAD_REQUEST
+        if len(login_data.contraseña) < 8:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="La contraseña debe tener al menos 8 caracteres",
             )
 
         if "@" in login_data.nombre_usuario:
-            patron_email=r"^[\w\.-]+@[\w\.-]+\.\w+$"
-            if not re.match(patron_email,login_data.nombre_usuario):
+            patron_email = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+            if not re.match(patron_email, login_data.nombre_usuario):
                 raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="El formato del email no es válido",
                 )
 
-            usuario_crud=UsuarioCRUD(db)
-            usuario=usuario_crud.autenticar_usuario(
-                login_data.nombre_usuario, login_data.contraseña
-            )
+        usuario_crud = UsuarioCRUD(db)
+        usuario = usuario_crud.autenticar_usuario(
+            login_data.nombre_usuario, login_data.contraseña
+        )
 
         if not usuario:
             raise HTTPException(
@@ -99,12 +89,9 @@ async def crear_usuario_admin(db: Session = Depends(get_db)):
     Errores:
         400 BAD_REQUEST: Error en los datos enviados.
         500 INTERNAL_SERVER_ERROR: Fallo al crear el administrador.
-
     """
-
     try:
         usuario_crud = UsuarioCRUD(db)
-
 
         admin_existente = usuario_crud.obtener_admin_por_defecto()
         if admin_existente:
@@ -169,9 +156,7 @@ async def verificar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
     Errores:
         404 NOT_FOUND: Si el usuario no existe.
         500 INTERNAL_SERVER_ERROR: Error en la verificación.
-
     """
-
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.obtener_usuario(usuario_id)
