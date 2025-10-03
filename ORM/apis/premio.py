@@ -5,10 +5,10 @@ API de Premios - Endpoints para gestión de premios
 from typing import List
 from uuid import UUID
 
-from crud.premio_crud import PremioCRUD
-from database.config import get_db
+from ORM.crud.premio_crud import PremioCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import PremioCreate, PremioResponse, PremioUpdate, RespuestaAPI
+from ORM.schemas import PremioCreate, PremioResponse, PremioUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/premios", tags=["premios"])

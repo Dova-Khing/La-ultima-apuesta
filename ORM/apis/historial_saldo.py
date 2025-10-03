@@ -5,10 +5,10 @@ API de Historial de Saldo - Endpoints para gestión del historial de movimientos
 from typing import List
 from uuid import UUID
 
-from crud.historial_saldo_crud import HistorialSaldoCRUD
-from database.config import get_db
+from ORM.crud.historial_saldo_crud import HistorialSaldoCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import (
+from ORM.schemas import (
     HistorialSaldoCreate,
     HistorialSaldoResponse,
     HistorialSaldoUpdate,

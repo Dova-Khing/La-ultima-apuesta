@@ -5,10 +5,10 @@ API de Boletos - Endpoints para gestión de boletos
 from typing import List
 from uuid import UUID
 
-from crud.Boleto_crud import BoletoCRUD
-from database.config import get_db
+from ORM.crud.Boleto_crud import BoletoCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import BoletoCreate, BoletoResponse, BoletoUpdate, RespuestaAPI
+from ORM.schemas import BoletoCreate, BoletoResponse, BoletoUpdate, RespuestaAPI
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/boletos", tags=["boletos"])

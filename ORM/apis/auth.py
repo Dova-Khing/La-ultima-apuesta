@@ -4,10 +4,10 @@ API de Autenticación - Endpoints para login y autenticación
 
 from uuid import UUID
 
-from crud.usuario_crud import UsuarioCRUD
-from database.config import get_db
+from ORM.crud.usuario_crud import UsuarioCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import RespuestaAPI, UsuarioLogin, UsuarioResponse
+from ORM.schemas import RespuestaAPI, UsuarioLogin, UsuarioResponse
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/auth", tags=["autenticación"])
@@ -19,7 +19,7 @@ async def login(login_data: UsuarioLogin, db: Session = Depends(get_db)):
     try:
         usuario_crud = UsuarioCRUD(db)
         usuario = usuario_crud.autenticar_usuario(
-            login_data.nombre_usuario, login_data.contraseña
+            login_data.nombre_usuario, login_data.contrasenna
         )
 
         if not usuario:
@@ -56,13 +56,13 @@ async def crear_usuario_admin(db: Session = Depends(get_db)):
         # Crear admin por defecto
         from auth.security import PasswordManager
 
-        contraseña_admin = PasswordManager.generate_secure_password(12)
+        contrasena_admin = PasswordManager.generate_secure_password(12)
 
         admin = usuario_crud.crear_usuario(
             nombre="Administrador del Sistema",
             nombre_usuario="admin",
             email="admin@system.com",
-            contraseña=contraseña_admin,
+            contrasena=contrasena_admin,
             edad="99",
             saldo_inicial=0,
             es_admin=True,
@@ -73,7 +73,7 @@ async def crear_usuario_admin(db: Session = Depends(get_db)):
             exito=True,
             datos={
                 "admin_id": str(admin.id),
-                "contraseña_temporal": contraseña_admin,
+                "contrasena_temporal": contrasena_admin,
                 "mensaje": "IMPORTANTE: Cambie esta contraseña en su primer inicio de sesión",
             },
         )

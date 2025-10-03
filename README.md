@@ -1,6 +1,6 @@
 # Proyecto ORM - Juegos (Bingo, Ruleta y Lotería)
 
-Este proyecto implementa un sistema de juegos de azar (Bingo, Ruleta y Lotería) utilizando **SQLAlchemy** con conexión a **PostgreSQL** (Neon Database).  
+Este proyecto implementa un sistema de juegos de azar (Bingo, Ruleta y Lotería) utilizando **SQLAlchemy** con conexión a **PostgreSQL** (Neon Database).
 Incluye operaciones CRUD, validaciones con Pydantic y soporte para migraciones con Alembic.
 
 
@@ -125,5 +125,5 @@ alembic upgrade head
 Ejecuta el script principal para verificar que todo está funcionando:
 
 ```bash
-   python ORM/login.py
+  python -m ORM.login
 ```
