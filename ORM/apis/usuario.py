@@ -5,11 +5,11 @@ API de Usuarios - Endpoints para gestión de usuarios
 from typing import List
 from uuid import UUID
 
-from crud.usuario_crud import UsuarioCRUD
-from database.config import get_db
+from ORM.crud.usuario_crud import UsuarioCRUD
+from ORM.database.config import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from schemas import (
-    CambioContraseña,
+from ORM.schemas import (
+    CambioContrasena,
     RespuestaAPI,
     UsuarioCreate,
     UsuarioResponse,
@@ -167,7 +167,7 @@ async def crear_usuario(usuario_data: UsuarioCreate, db: Session = Depends(get_d
             nombre=usuario_data.nombre,
             nombre_usuario=usuario_data.nombre_usuario,
             email=usuario_data.email,
-            contraseña=usuario_data.contraseña,
+            contrasena=usuario_data.contrasena,
             telefono=usuario_data.telefono,
             edad=usuario_data.edad,
             saldo_inicial=usuario_data.saldo_inicial,
@@ -301,9 +301,9 @@ async def desactivar_usuario(usuario_id: UUID, db: Session = Depends(get_db)):
         )
 
 
-@router.post("/{usuario_id}/cambiar-contraseña", response_model=RespuestaAPI)
-async def cambiar_contraseña(
-    usuario_id: UUID, cambio_data: CambioContraseña, db: Session = Depends(get_db)
+@router.post("/{usuario_id}/cambiar-contrasena", response_model=RespuestaAPI)
+async def cambiar_contrasena(
+    usuario_id: UUID, cambio_data: CambioContrasena, db: Session = Depends(get_db)
 ):
     """
     Cambiar la contraseña de un usuario.
@@ -328,12 +328,12 @@ async def cambiar_contraseña(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado"
             )
 
-        cambio_exitoso = usuario_crud.cambiar_contraseña(
-            usuario_id, cambio_data.contraseña_actual, cambio_data.nueva_contraseña
+        cambio_exitoso = usuario_crud.cambiar_contrasena(
+            usuario_id, cambio_data.contrasena_actual, cambio_data.nueva_contrasena
         )
 
         if cambio_exitoso:
-            return RespuestaAPI(mensaje="Contraseña cambiada exitosamente", exito=True)
+            return RespuestaAPI(mensaje="Contrasena cambiada exitosamente", exito=True)
         else:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

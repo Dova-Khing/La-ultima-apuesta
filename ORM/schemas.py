@@ -20,7 +20,7 @@ class UsuarioBase(BaseModel):
 
 
 class UsuarioCreate(UsuarioBase):
-    contraseña: str
+    contrasena: str
 
 
 class UsuarioUpdate(BaseModel):
@@ -37,8 +37,8 @@ class UsuarioUpdate(BaseModel):
 class UsuarioResponse(UsuarioBase):
     id: UUID
     activo: bool
-    fecha_creacion: datetime
-    fecha_edicion: Optional[datetime] = None
+    fecha_registro: datetime
+    fecha_actualizacion: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -46,12 +46,12 @@ class UsuarioResponse(UsuarioBase):
 
 class UsuarioLogin(BaseModel):
     nombre_usuario: str
-    contraseña: str
+    contrasena: str
 
 
-class CambioContraseña(BaseModel):
-    contraseña_actual: str
-    nueva_contraseña: str
+class CambioContrasena(BaseModel):
+    contrasena_actual: str
+    nueva_contrasena: str
 
 
 # Modelos base para Premio
@@ -75,7 +75,7 @@ class PremioUpdate(BaseModel):
 class PremioResponse(PremioBase):
     id: UUID
     juego_id: UUID
-    fecha_creacion: datetime
+    fecha_registro: datetime
     fecha_actualizacion: Optional[datetime] = None
     creado_por: Optional[str] = None
     actualizado_por: Optional[str] = None
@@ -136,7 +136,7 @@ class JuegoUpdate(BaseModel):
 
 class JuegoResponse(JuegoBase):
     id: UUID
-    fecha_creacion: datetime
+    fecha_registro: datetime
     fecha_actualizacion: datetime
     creado_por: str
     actualizado_por: Optional[str] = None
@@ -194,7 +194,7 @@ class BoletoResponse(BoletoBase):
     id: UUID
     usuario_id: UUID
     juego_id: UUID
-    fecha_creacion: datetime
+    fecha_registro: datetime
     fecha_actualizacion: Optional[datetime] = None
     creado_por: str
     actualizado_por: Optional[str] = None
